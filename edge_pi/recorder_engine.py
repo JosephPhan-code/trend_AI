@@ -251,9 +251,11 @@ class AutoHlsDataRecorder:
                 pass
             self.active_jsonl_fh = None
 
-        # Write standard HLS playlist.m3u8 for direct playback / ffmpeg concat
+        # Write standard HLS playlist.m3u8 and zero-copy remux into single video.mp4 for testing
+        mp4_created = False
         if self.session_segments:
             m3u8_out = os.path.join(self.active_session_dir, "playlist.m3u8")
+            mp4_out = os.path.join(self.active_session_dir, "video.mp4")
             try:
                 with open(m3u8_out, "w", encoding="utf-8") as f:
                     f.write("#EXTM3U\n#EXT-X-VERSION:3\n")
@@ -262,11 +264,31 @@ class AutoHlsDataRecorder:
                     for seg in self.session_segments:
                         f.write(f"#EXTINF:{float(HLS_SEGMENT_SEC):.3f},\n{seg}\n")
                     f.write("#EXT-X-ENDLIST\n")
-            except OSError:
+                res = subprocess.run(
+                    [
+                        "taskset", "-c", "3",
+                        "nice", "-n", "10",
+                        "ffmpeg", "-y", "-hide_banner", "-loglevel", "error",
+                        "-i", "playlist.m3u8",
+                        "-c", "copy",
+                        "video.mp4",
+                    ],
+                    cwd=self.active_session_dir,
+                    timeout=15.0,
+                    check=False,
+                )
+                if res.returncode == 0 and os.path.exists(mp4_out) and os.path.getsize(mp4_out) > 0:
+                    mp4_created = True
+                    for seg in self.session_segments:
+                        try:
+                            os.remove(os.path.join(self.active_session_dir, seg))
+                        except OSError:
+                            pass
+            except Exception:
                 pass
         print(
             f"[REC] <<< AUTO-CAPTURE SAVED: {os.path.basename(self.active_session_dir)} "
-            f"({len(self.session_segments)} segments .ts + labels_metadata.jsonl)"
+            f"({'video.mp4' if mp4_created else f'{len(self.session_segments)} segments .ts'} + labels_metadata.jsonl)"
         )
         self.active_session_dir = None
 

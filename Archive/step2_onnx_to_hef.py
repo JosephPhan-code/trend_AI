@@ -81,17 +81,18 @@ def convert_onnx_to_hef(
     )
     print(f"[+] Parse thành công ONNX vào Hailo HAR.")
     
-    # Cấu hình tiền xử lý (Normalization: pixel / 255.0) + Tối ưu Single-Context
+    # Cấu hình tiền xử lý (Normalization: pixel / 255.0) + Best Practice Single-Context cho YOLO26s-P2
     # YOLO nhận đầu vào [0.0, 1.0], Hailo tích hợp trực tiếp phép chia 255 vào NPU
     alls_lines = [
         "normalization1 = normalization([0.0, 0.0, 0.0], [255.0, 255.0, 255.0])",
         "performance_param(compiler_optimization_level=max)",
     ]
     if single_context:
-        alls_lines.append(
-            f"model_optimization_config(compression_params, auto_4bit_weights_ratio={auto_4bit_ratio:.2f})"
-        )
-        alls_lines.append("context_switch_param(mode=disabled)")
+        alls_lines.extend([
+            "model_optimization_flavor(optimization_level=4, compression_level=4)",
+            f"model_optimization_config(compression_params, auto_4bit_weights_ratio={auto_4bit_ratio:.2f})",
+            "context_switch_param(max_control_utilization=0.90, max_compute_utilization=0.90, max_memory_utilization=0.90)",
+        ])
     alls_script = "\n".join(alls_lines) + "\n"
     print(f"[*] Áp dụng Hailo Model Script (.alls):\n{alls_script}")
     try:
