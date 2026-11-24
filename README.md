@@ -26,9 +26,11 @@ trend_AI/
 │   └── step2_onnx_to_hef.py  # Biên dịch ONNX -> HAR -> INT8 Quantization -> Single-Context HEF
 │
 ├── docs/                     # [DOCUMENTATION] Tài liệu giải phẫu hiệu năng & cấu hình Best Practice cho YOLO26s
-│   ├── PI5_HAILO8_OPTIMIZATION_GUIDE.md # Hướng dẫn chi tiết tối ưu Pi 5 + Hailo-8 & 3 Best Practices cho YOLO26s-P2
-│   ├── yolo26s_p2_max512.yaml           # Best Practice 2: YOLO26s 4-head (P2..P5) khóa trần max_channels=512 (~4.8M params, 1 Context)
-│   └── yolo26s_p2_p3_p4.yaml            # Best Practice 3: YOLO26s 3-head (P2/P3/P4, bỏ P5) chuyên UAV tầm xa (~2.95M params, 1 Context)
+│   ├── PI5_HAILO8_OPTIMIZATION_GUIDE.md       # Hướng dẫn chi tiết tối ưu Pi 5 + Hailo-8 & 3 Best Practices cho YOLO26s-P2
+│   ├── README_TRAIN_BP2_YOLO26S_P2_MAX512.md  # [BÀN GIAO TRAIN 1] Hướng dẫn train YOLO26s-P2 (max_channels=512, 4 nhánh)
+│   ├── README_TRAIN_BP3_YOLO26S_P2_P3_P4.md   # [BÀN GIAO TRAIN 2] Hướng dẫn train YOLO26s-P2-P3-P4 (No P5, 3 nhánh tầm xa)
+│   ├── yolo26s_p2_max512.yaml                 # Best Practice 2: YOLO26s 4-head (P2..P5) khóa trần max_channels=512 (~4.8M params)
+│   └── yolo26s_p2_p3_p4.yaml                  # Best Practice 3: YOLO26s 3-head (P2/P3/P4, bỏ P5) chuyên UAV tầm xa (~2.95M params)
 │
 ├── drone_test_web/           # [PC TESTER] Web Dashboard kiểm thử & đánh giá mô hình trên PC (Flask + ByteTrack)
 │   └── app.py                # Giao diện test video/camera trên PC (PyTorch .pt / ONNX)
@@ -108,6 +110,6 @@ python Archive/step2_onnx_to_hef.py \
 
 Xem chi tiết phân tích giải phẫu từng layer (`9.71M params`), bảng đối chiếu đánh đổi (Trade-off) và 3 Best Practices nâng tốc độ **`YOLO26s-P2`** từ `29.8 FPS` lên `80 – 120+ FPS` tại:
 - **[`docs/PI5_HAILO8_OPTIMIZATION_GUIDE.md`](docs/PI5_HAILO8_OPTIMIZATION_GUIDE.md)**
-- Cấu hình kiến trúc mẫu:
-  - **[`docs/yolo26s_p2_max512.yaml`](docs/yolo26s_p2_max512.yaml)** *(Giữ nguyên 100% `YOLO26s` đủ 4 nhánh `P2/P3/P4/P5`, khóa `max_channels=512` $\rightarrow$ giảm từ `9.71M` xuống `~4.80M` params, đạt 1 Context `80–105 FPS`)*.
-  - **[`docs/yolo26s_p2_p3_p4.yaml`](docs/yolo26s_p2_p3_p4.yaml)** *(Giữ nguyên 100% `YOLO26s` ở `P2/P3/P4`, loại bỏ tầng `P5 20×20` $\rightarrow$ giảm xuống `~2.95M` params, đạt 1 Context `100–120+ FPS`)*.
+- **Tài liệu bàn giao huấn luyện lại (Training Handover Specs):**
+  - **[`docs/README_TRAIN_BP2_YOLO26S_P2_MAX512.md`](docs/README_TRAIN_BP2_YOLO26S_P2_MAX512.md)** + [`docs/yolo26s_p2_max512.yaml`](docs/yolo26s_p2_max512.yaml) *(Phương án 1 — Best Practice 2: Giữ nguyên 100% `YOLO26s` đủ 4 nhánh `P2/P3/P4/P5`, khóa `max_channels=512` $\rightarrow$ giảm từ `9.71M` xuống `~4.80M` params, đạt 1 Context `80–105 FPS`)*.
+  - **[`docs/README_TRAIN_BP3_YOLO26S_P2_P3_P4.md`](docs/README_TRAIN_BP3_YOLO26S_P2_P3_P4.md)** + [`docs/yolo26s_p2_p3_p4.yaml`](docs/yolo26s_p2_p3_p4.yaml) *(Phương án 2 — Best Practice 3 Cấp độ 2: Giữ nguyên 100% `YOLO26s` ở `P2/P3/P4`, loại bỏ tầng `P5 20×20` $\rightarrow$ giảm xuống `~2.95M` params, đạt 1 Context `100–120+ FPS`)*.
