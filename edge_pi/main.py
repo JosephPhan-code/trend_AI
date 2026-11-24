@@ -156,6 +156,12 @@ from web_dashboard import (
     thread_web,
     video_feed,
 )
+from recorder_engine import (
+    AUTO_RECORD_ENABLED,
+    AutoHlsDataRecorder,
+    q_record,
+    thread_recorder,
+)
 
 
 _INSTANCE_LOCK = None
@@ -238,6 +244,10 @@ class AegisTrackerApplication:
                 threading.Thread(target=thread_ai, name="T-AI", daemon=True),
                 threading.Thread(target=thread_pid_servo, args=(self.servo,), name="T-PID", daemon=True),
             ]
+            if AUTO_RECORD_ENABLED:
+                self.threads.append(
+                    threading.Thread(target=thread_recorder, name="T-Recorder", daemon=True)
+                )
             if WEB_ENABLED:
                 self.threads.append(
                     threading.Thread(target=thread_web, name="T-Web", daemon=True)

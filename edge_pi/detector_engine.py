@@ -47,6 +47,7 @@ from tracker_ekf import (
     _offset_detections,
     detect_with_roi,
 )
+from recorder_engine import notify_recorder_frame
 
 
 def _make_anchors(input_size=640, strides=(4, 8, 16, 32)):
@@ -363,6 +364,7 @@ def _push_results(frame, detections, ai_fps, timestamp, gimbal=None, data_queue=
         "gimbal": gimbal,
     }
     put_latest(target_q, payload)
+    notify_recorder_frame(timestamp, frame, visible)
 
 
 class BaseDetector:
