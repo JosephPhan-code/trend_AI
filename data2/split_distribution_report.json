@@ -1,0 +1,137 @@
+{
+  "updated_at": "2026-11-22T23:21:01.449786",
+  "split_method": "Sequence-Block Stratified Split (block_size<=150) — Zero Frame Leakage",
+  "anti_overfitting_features": [
+    "Contiguous video-block isolation across train/val/test",
+    "Hard-Negative injection (birds, airplanes, helicopters, empty HUD crosshairs, buildings)",
+    "Stratified identical distribution across train/val/test",
+    "10k Sky Hard-Negative enrichment (distant birds, civilian airplanes, backlit clouds, antenna tips)"
+  ],
+  "totals": {
+    "grand_total": 237636,
+    "train": 188799,
+    "val": 24400,
+    "test": 24437,
+    "total_hard_negatives": 18366,
+    "hard_negative_pct": 7.73
+  },
+  "per_source_distribution": {
+    "hard_neg_antiuav": {
+      "total": 3748,
+      "train": 2848,
+      "val": 450,
+      "test": 450,
+      "train_pct": 76.0,
+      "val_pct": 12.0,
+      "test_pct": 12.0
+    },
+    "hard_neg_bird_air": {
+      "total": 4618,
+      "train": 3418,
+      "val": 600,
+      "test": 600,
+      "train_pct": 74.0,
+      "val_pct": 13.0,
+      "test_pct": 13.0
+    },
+    "ir_2025": {
+      "total": 25000,
+      "train": 19900,
+      "val": 2550,
+      "test": 2550,
+      "train_pct": 79.6,
+      "val_pct": 10.2,
+      "test_pct": 10.2
+    },
+    "ir_410": {
+      "total": 25000,
+      "train": 19900,
+      "val": 2550,
+      "test": 2550,
+      "train_pct": 79.6,
+      "val_pct": 10.2,
+      "test_pct": 10.2
+    },
+    "rgb_antiuav300": {
+      "total": 72692,
+      "train": 58050,
+      "val": 7292,
+      "test": 7350,
+      "train_pct": 79.9,
+      "val_pct": 10.0,
+      "test_pct": 10.1
+    },
+    "rgb_detfly": {
+      "total": 998,
+      "train": 704,
+      "val": 147,
+      "test": 147,
+      "train_pct": 70.5,
+      "val_pct": 14.7,
+      "test_pct": 14.7
+    },
+    "rgb_dvb10k": {
+      "total": 5301,
+      "train": 4101,
+      "val": 600,
+      "test": 600,
+      "train_pct": 77.4,
+      "val_pct": 11.3,
+      "test_pct": 11.3
+    },
+    "rgb_mavvid": {
+      "total": 36547,
+      "train": 29047,
+      "val": 3750,
+      "test": 3750,
+      "train_pct": 79.5,
+      "val_pct": 10.3,
+      "test_pct": 10.3
+    },
+    "rgb_pathikg": {
+      "total": 53732,
+      "train": 42932,
+      "val": 5400,
+      "test": 5400,
+      "train_pct": 79.9,
+      "val_pct": 10.0,
+      "test_pct": 10.0
+    },
+    "hard_neg_sky_bird": {
+      "total": 2500,
+      "train": 1985,
+      "val": 253,
+      "test": 262,
+      "train_pct": 79.4,
+      "val_pct": 10.1,
+      "test_pct": 10.5
+    },
+    "hard_neg_sky_airplane": {
+      "total": 2500,
+      "train": 1957,
+      "val": 280,
+      "test": 263,
+      "train_pct": 78.3,
+      "val_pct": 11.2,
+      "test_pct": 10.5
+    },
+    "hard_neg_sky_cloud": {
+      "total": 2500,
+      "train": 1967,
+      "val": 268,
+      "test": 265,
+      "train_pct": 78.7,
+      "val_pct": 10.7,
+      "test_pct": 10.6
+    },
+    "hard_neg_sky_antenna": {
+      "total": 2500,
+      "train": 1990,
+      "val": 260,
+      "test": 250,
+      "train_pct": 79.6,
+      "val_pct": 10.4,
+      "test_pct": 10.0
+    }
+  }
+}

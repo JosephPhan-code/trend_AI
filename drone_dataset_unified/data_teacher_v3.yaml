@@ -1,0 +1,8 @@
+# Clean Teacher v3 Gold Subset (100% Clean d2_* + 6 HN domains + c1_orig, ZERO c1_datatrain)
+path: e:\trend_AI\drone_dataset_unified
+train: teacher_v3_train.txt
+val: teacher_v3_val.txt
+
+nc: 1
+names:
+  0: drone

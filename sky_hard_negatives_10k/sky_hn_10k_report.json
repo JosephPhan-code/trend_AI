@@ -1,0 +1,37 @@
+{
+  "completed_at": "2026-11-22T23:23:03.174914",
+  "pack_dir": "e:\\trend_AI\\sky_hard_negatives_10k",
+  "injected_into": "e:\\trend_AI\\data2",
+  "total_images": 10000,
+  "pack_size_mb": 778.3,
+  "per_category_counts": {
+    "sky_bird": 2500,
+    "sky_airplane": 2500,
+    "sky_cloud": 2500,
+    "sky_antenna": 2500
+  },
+  "source_breakdown": {
+    "sky_airplane::github_DroneDetectionThesis": 650,
+    "sky_airplane::github_FGVC_Aircraft": 924,
+    "sky_airplane::github_sekilab_flying_objects": 413,
+    "sky_airplane::openimages_v7_sky_airplane": 513,
+    "sky_antenna::hf_EPRI_transmission_sky": 684,
+    "sky_antenna::hf_Francesco_cell_towers": 500,
+    "sky_antenna::hf_sxiong_transmission_sky": 800,
+    "sky_antenna::openimages_v7_sky_antenna": 516,
+    "sky_bird::github_DroneDetectionThesis": 1821,
+    "sky_bird::github_sekilab_flying_objects": 57,
+    "sky_bird::openimages_v7_sky_bird": 622,
+    "sky_cloud::github_CCSN_clouds": 1536,
+    "sky_cloud::github_SkyFinder_zenodo": 249,
+    "sky_cloud::github_WSISEG_backlit_sky": 380,
+    "sky_cloud::openimages_v7_sky_cloud": 335
+  },
+  "zero_drone_guarantee": true,
+  "dedup_methods": [
+    "MD5 exact vs data2 hard negatives & intra-pack",
+    "64-bit dHash perceptual near-duplicate filter"
+  ],
+  "free_disk_e_gb": 28.01,
+  "elapsed_seconds": 1873.9
+}

@@ -1,0 +1,40 @@
+{
+  "updated_at": "2026-11-24T15:16:50",
+  "active_production_dataset": {
+    "version": "v3.0.0",
+    "path": "E:\\trend_AI\\drone_dataset_unified",
+    "data_yaml": "E:\\trend_AI\\drone_dataset_unified\\data.yaml",
+    "train_script": "E:\\trend_AI\\drone_dataset_unified\\train_unified.py",
+    "manage_cli": "E:\\trend_AI\\drone_dataset_unified\\manage_dataset.py",
+    "dataset_card": "E:\\trend_AI\\drone_dataset_unified\\DATASET_CARD.md",
+    "dataset_sha256": "34df6f9935237722a40fdea3a2b47740d04b642abdada95690a773c5702c3010",
+    "total_images": 320980,
+    "total_boxes": 867389
+  },
+  "all_datasets": [
+    {
+      "version": "v3.0.0",
+      "status": "ACTIVE_PRODUCTION",
+      "folder": "e:\\trend_AI\\drone_dataset_unified",
+      "description": "Unified cleaned Batch 1 + Batch 2, zero-leakage train/val/test, Teacher v3 purified (~98.9% zero-FP), fully tagged.",
+      "total_images": 320980
+    },
+    {
+      "version": "v2.0.0",
+      "status": "ARCHIVED_SOURCE",
+      "folder": "e:\\trend_AI\\data2",
+      "description": "Batch 2 source folder (hardlinked into unified v3.0.0 — do NOT delete raw files while hardlinks remain intact; NTFS handles refcounts safely)."
+    },
+    {
+      "version": "v1.0.0",
+      "status": "ARCHIVED_SOURCE",
+      "folder": "e:\\trend_AI\\clean_dataset",
+      "description": "Batch 1 source folder (cleaned & merged into unified v3.0.0)."
+    }
+  ],
+  "quarantine_and_backups": {
+    "quarantine_v3": "e:\\trend_AI\\quarantine_audit_v3",
+    "quarantine_v4_teacher_v3": "e:\\trend_AI\\quarantine_audit_v4",
+    "teacher_v3_weights": "e:\\trend_AI\\clean_relabel_train\\clean_teacher_v3\\weights\\best.pt"
+  }
+}

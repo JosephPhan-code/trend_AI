@@ -1,0 +1,30 @@
+# Custom Anti-UAV Drone Tracker Config (TrackTrack CVPR 2025 tuned for small/fast drones)
+tracker_type: tracktrack
+track_high_thresh: 0.45    # Lowered from 0.60 so distant small drones start/maintain tracks reliably
+track_low_thresh: 0.15     # Second-stage recovery for blurry / low-light / occluded frames
+new_track_thresh: 0.55     # Prevents 1-frame noise/glint from spawning fake tracks
+track_buffer: 60           # Keep track ID alive for ~2 seconds (at 30 FPS) during cloud/building occlusion
+match_thresh: 0.72
+lost_match_thr: 0.85       # Re-bind lost drone tracks after fast camera pan or brief occlusion
+
+# Association weights (HMIoU + motion angle for erratic UAV maneuvers)
+iou_weight: 0.55
+reid_weight: 0.45
+conf_weight: 0.10
+angle_weight: 0.08
+
+# Iterative assignment
+penalty_p: 0.20
+penalty_q: 0.40
+reduce_step: 0.05
+
+# Track-Aware Initialization (suppresses single-frame bird/sensor flashes)
+tai_thr: 0.55
+min_track_len: 3
+
+# Camera Motion Compensation (essential for PTZ / handheld / moving cameras)
+gmc_method: sparseOptFlow
+
+# Native YOLO feature ReID
+with_reid: False
+model: auto

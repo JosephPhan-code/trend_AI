@@ -1,0 +1,5 @@
+train: e:\trend_AI\clean_dataset\train_clean_only.txt
+val: e:\trend_AI\clean_dataset\val_clean_only.txt
+nc: 1
+names:
+  0: drone

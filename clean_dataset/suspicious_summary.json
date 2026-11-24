@@ -1,0 +1,33 @@
+{
+  "total_images": 32223,
+  "total_suspicious": 14679,
+  "severity_counts": {
+    "critical": 13526,
+    "high": 623,
+    "medium": 530
+  },
+  "reason_counts": {
+    "hud_crosshair_giant_box": 9540,
+    "ir_building_giant_box": 3909,
+    "low_autolabel_conf": 2172,
+    "extreme_aspect_ratio": 185,
+    "hud_oversized_box": 94,
+    "tiny_box": 53,
+    "empty_label": 38,
+    "ir_edge_building_box": 36,
+    "blank_flat_box": 4,
+    "dark_low_contrast_box": 1
+  },
+  "top_resolutions": {
+    "1920x1080": 15047,
+    "640x512": 12726,
+    "1280x720": 1906,
+    "720x1280": 524,
+    "576x1024": 316,
+    "1024x576": 283,
+    "854x480": 120,
+    "1920x1088": 71,
+    "1536x2048": 64,
+    "1000x1000": 28
+  }
+}

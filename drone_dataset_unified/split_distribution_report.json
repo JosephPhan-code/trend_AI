@@ -1,0 +1,303 @@
+{
+  "generated_at": "2026-11-23T03:44:48.454636",
+  "output_dir": "e:\\trend_AI\\drone_dataset_unified",
+  "elapsed_seconds": 1133.7,
+  "totals": {
+    "total_unified_images": 320980,
+    "train": 263332,
+    "val": 28762,
+    "test": 28886,
+    "train_pct": 82.04,
+    "val_pct": 8.96,
+    "test_pct": 9.0,
+    "cross_dhash_visual_dups_removed": 12196,
+    "cross_dhash_breakdown": {
+      "cross_dhash_dup:c1_tonghop": 7275,
+      "contradict_hn:hn_antiuav": 690,
+      "cross_dhash_dup:c1_orig": 1707,
+      "contradict_hn:hn_bird": 22,
+      "cross_dhash_dup:c1_datatrain": 2495,
+      "contradict_hn:hn_skyant": 1,
+      "contradict_hn:hn_skycloud": 1,
+      "contradict_hn:hn_skybird": 5
+    },
+    "total_boxes": 867389
+  },
+  "integrity_verification": {
+    "disk_counts": {
+      "train": 263332,
+      "val": 28762,
+      "test": 28886
+    },
+    "disk_unpaired_count": 0,
+    "invalid_label_lines": 0,
+    "hn_with_box": 0,
+    "positive_empty_label": 0,
+    "verified_100pct_clean": true
+  },
+  "leakage_verification": {
+    "md5_overlap_train_val": 0,
+    "md5_overlap_train_test": 0,
+    "md5_overlap_val_test": 0,
+    "high_entropy_dhash64_overlap_train_val": 0,
+    "high_entropy_dhash64_overlap_train_test": 0,
+    "high_entropy_dhash64_overlap_val_test": 0,
+    "residual_dhash_snapped": 9281
+  },
+  "modality_distribution": {
+    "train": {
+      "IR": {
+        "count": 42712,
+        "pct": 16.22
+      },
+      "RGB": {
+        "count": 220620,
+        "pct": 83.78
+      }
+    },
+    "val": {
+      "IR": {
+        "count": 3617,
+        "pct": 12.58
+      },
+      "RGB": {
+        "count": 25145,
+        "pct": 87.42
+      }
+    },
+    "test": {
+      "IR": {
+        "count": 3655,
+        "pct": 12.65
+      },
+      "RGB": {
+        "count": 25231,
+        "pct": 87.35
+      }
+    }
+  },
+  "positive_vs_hard_negative": {
+    "train": {
+      "HardNeg_0box": {
+        "count": 12630,
+        "pct": 4.8
+      },
+      "Positive_Drone": {
+        "count": 250702,
+        "pct": 95.2
+      }
+    },
+    "val": {
+      "HardNeg_0box": {
+        "count": 1546,
+        "pct": 5.38
+      },
+      "Positive_Drone": {
+        "count": 27216,
+        "pct": 94.62
+      }
+    },
+    "test": {
+      "HardNeg_0box": {
+        "count": 1560,
+        "pct": 5.4
+      },
+      "Positive_Drone": {
+        "count": 27326,
+        "pct": 94.6
+      }
+    }
+  },
+  "box_size_distribution": {
+    "train": {
+      "large": {
+        "count": 24914,
+        "pct": 3.32
+      },
+      "medium": {
+        "count": 99892,
+        "pct": 13.3
+      },
+      "small": {
+        "count": 626492,
+        "pct": 83.39
+      }
+    },
+    "val": {
+      "large": {
+        "count": 2813,
+        "pct": 4.76
+      },
+      "medium": {
+        "count": 9874,
+        "pct": 16.71
+      },
+      "small": {
+        "count": 46401,
+        "pct": 78.53
+      }
+    },
+    "test": {
+      "large": {
+        "count": 3056,
+        "pct": 5.36
+      },
+      "medium": {
+        "count": 10163,
+        "pct": 17.83
+      },
+      "small": {
+        "count": 43784,
+        "pct": 76.81
+      }
+    }
+  },
+  "per_source_distribution": {
+    "c1_datatrain": {
+      "total": 67785,
+      "train": 55889,
+      "val": 5917,
+      "test": 5979,
+      "train_pct": 82.45,
+      "val_pct": 8.73,
+      "test_pct": 8.82
+    },
+    "c1_orig": {
+      "total": 6765,
+      "train": 5648,
+      "val": 565,
+      "test": 552,
+      "train_pct": 83.49,
+      "val_pct": 8.35,
+      "test_pct": 8.16
+    },
+    "c1_tonghop": {
+      "total": 12730,
+      "train": 10716,
+      "val": 1029,
+      "test": 985,
+      "train_pct": 84.18,
+      "val_pct": 8.08,
+      "test_pct": 7.74
+    },
+    "d2_ir_2025": {
+      "total": 25000,
+      "train": 22300,
+      "val": 1358,
+      "test": 1342,
+      "train_pct": 89.2,
+      "val_pct": 5.43,
+      "test_pct": 5.37
+    },
+    "d2_ir_410": {
+      "total": 24984,
+      "train": 20412,
+      "val": 2259,
+      "test": 2313,
+      "train_pct": 81.7,
+      "val_pct": 9.04,
+      "test_pct": 9.26
+    },
+    "d2_rgb_antiuav300": {
+      "total": 71559,
+      "train": 58543,
+      "val": 6458,
+      "test": 6558,
+      "train_pct": 81.81,
+      "val_pct": 9.02,
+      "test_pct": 9.16
+    },
+    "d2_rgb_detfly": {
+      "total": 998,
+      "train": 874,
+      "val": 60,
+      "test": 64,
+      "train_pct": 87.58,
+      "val_pct": 6.01,
+      "test_pct": 6.41
+    },
+    "d2_rgb_dvb10k": {
+      "total": 5178,
+      "train": 4108,
+      "val": 533,
+      "test": 537,
+      "train_pct": 79.34,
+      "val_pct": 10.29,
+      "test_pct": 10.37
+    },
+    "d2_rgb_mavvid": {
+      "total": 36523,
+      "train": 29059,
+      "val": 3745,
+      "test": 3719,
+      "train_pct": 79.56,
+      "val_pct": 10.25,
+      "test_pct": 10.18
+    },
+    "d2_rgb_pathikg": {
+      "total": 53722,
+      "train": 43153,
+      "val": 5292,
+      "test": 5277,
+      "train_pct": 80.33,
+      "val_pct": 9.85,
+      "test_pct": 9.82
+    },
+    "hn_antiuav": {
+      "total": 1147,
+      "train": 949,
+      "val": 98,
+      "test": 100,
+      "train_pct": 82.74,
+      "val_pct": 8.54,
+      "test_pct": 8.72
+    },
+    "hn_bird": {
+      "total": 4596,
+      "train": 3652,
+      "val": 473,
+      "test": 471,
+      "train_pct": 79.46,
+      "val_pct": 10.29,
+      "test_pct": 10.25
+    },
+    "hn_skyair": {
+      "total": 2500,
+      "train": 2001,
+      "val": 250,
+      "test": 249,
+      "train_pct": 80.04,
+      "val_pct": 10.0,
+      "test_pct": 9.96
+    },
+    "hn_skyant": {
+      "total": 2499,
+      "train": 1999,
+      "val": 250,
+      "test": 250,
+      "train_pct": 79.99,
+      "val_pct": 10.0,
+      "test_pct": 10.0
+    },
+    "hn_skybird": {
+      "total": 2495,
+      "train": 2030,
+      "val": 227,
+      "test": 238,
+      "train_pct": 81.36,
+      "val_pct": 9.1,
+      "test_pct": 9.54
+    },
+    "hn_skycloud": {
+      "total": 2499,
+      "train": 1999,
+      "val": 248,
+      "test": 252,
+      "train_pct": 79.99,
+      "val_pct": 9.92,
+      "test_pct": 10.08
+    }
+  },
+  "disk_e_free_gb": 32.27,
+  "post_teacher_v3_purified": true
+}

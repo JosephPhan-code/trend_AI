@@ -1,0 +1,39 @@
+{
+  "total_images": 1040,
+  "per_category": {
+    "sky_bird (chim bay xa)": {
+      "tested": 262,
+      "fp_images_conf25": 137,
+      "fpr_pct_conf25": 52.29,
+      "fp_images_conf50": 85,
+      "fpr_pct_conf50": 32.44,
+      "total_fp_boxes_conf25": 277
+    },
+    "sky_airplane (may bay dan dung)": {
+      "tested": 263,
+      "fp_images_conf25": 129,
+      "fpr_pct_conf25": 49.05,
+      "fp_images_conf50": 91,
+      "fpr_pct_conf50": 34.6,
+      "total_fp_boxes_conf25": 152
+    },
+    "sky_cloud (may nguoc sang)": {
+      "tested": 265,
+      "fp_images_conf25": 85,
+      "fpr_pct_conf25": 32.08,
+      "fp_images_conf50": 33,
+      "fpr_pct_conf50": 12.45,
+      "total_fp_boxes_conf25": 140
+    },
+    "sky_antenna (dinh ang-ten)": {
+      "tested": 250,
+      "fp_images_conf25": 52,
+      "fpr_pct_conf25": 20.8,
+      "fp_images_conf50": 8,
+      "fpr_pct_conf50": 3.2,
+      "total_fp_boxes_conf25": 58
+    }
+  },
+  "overall_fpr_pct_conf25": 38.75,
+  "overall_fpr_pct_conf50": 20.87
+}

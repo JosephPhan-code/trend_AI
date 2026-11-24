@@ -1,0 +1,313 @@
+{
+  "timestamp": "2026-11-20T13:34:44.488486",
+  "config": {
+    "train_ratio": 0.85,
+    "output_dir": "e:\\trend_AI\\clean_dataset",
+    "class_names": {
+      "0": "drone"
+    }
+  },
+  "summary": {
+    "sources_scanned": 6,
+    "total_images_found": 44258,
+    "corrupt_images": 0,
+    "empty_labels": 28923,
+    "duplicate_images": 6022,
+    "images_without_labels": 28923,
+    "valid_pairs": 9313,
+    "boxes_removed_degenerate": 0,
+    "boxes_removed_duplicate_iou": 0,
+    "xml_converted": 0,
+    "final_train": 85708,
+    "final_val": 15165,
+    "final_total": 100873,
+    "total_boxes": 9666,
+    "per_source": {
+      "dataset_v2": {
+        "found": 2327,
+        "valid": 2135
+      },
+      "output_frames": {
+        "found": 2334,
+        "valid": 0
+      },
+      "archive_xml": {
+        "found": 1097,
+        "valid": 1097
+      },
+      "archive_yolo": {
+        "found": 1359,
+        "valid": 341
+      },
+      "large_dataset": {
+        "found": 34491,
+        "valid": 5696
+      },
+      "unified_prev": {
+        "found": 2650,
+        "valid": 44
+      }
+    }
+  },
+  "corrupt_images": [],
+  "corrupt_images_total": 0,
+  "duplicate_images_total": 6022,
+  "duplicate_images_sample": [
+    {
+      "duplicate": "e:\\trend_AI\\output_frames\\0001.jpg",
+      "original": "e:\\trend_AI\\dataset_v2\\images\\train\\0001.jpg"
+    },
+    {
+      "duplicate": "e:\\trend_AI\\output_frames\\0002.jpg",
+      "original": "e:\\trend_AI\\dataset_v2\\images\\train\\0002.jpg"
+    },
+    {
+      "duplicate": "e:\\trend_AI\\output_frames\\0003.jpg",
+      "original": "e:\\trend_AI\\dataset_v2\\images\\val\\0003.jpg"
+    },
+    {
+      "duplicate": "e:\\trend_AI\\output_frames\\0004.jpg",
+      "original": "e:\\trend_AI\\dataset_v2\\images\\train\\0004.jpg"
+    },
+    {
+      "duplicate": "e:\\trend_AI\\output_frames\\0005.jpg",
+      "original": "e:\\trend_AI\\dataset_v2\\images\\train\\0005.jpg"
+    },
+    {
+      "duplicate": "e:\\trend_AI\\output_frames\\0006.jpg",
+      "original": "e:\\trend_AI\\dataset_v2\\images\\train\\0006.jpg"
+    },
+    {
+      "duplicate": "e:\\trend_AI\\output_frames\\0007.jpg",
+      "original": "e:\\trend_AI\\dataset_v2\\images\\train\\0007.jpg"
+    },
+    {
+      "duplicate": "e:\\trend_AI\\output_frames\\0008.jpg",
+      "original": "e:\\trend_AI\\dataset_v2\\images\\val\\0008.jpg"
+    },
+    {
+      "duplicate": "e:\\trend_AI\\output_frames\\0009.jpg",
+      "original": "e:\\trend_AI\\dataset_v2\\images\\val\\0009.jpg"
+    },
+    {
+      "duplicate": "e:\\trend_AI\\output_frames\\0010.jpg",
+      "original": "e:\\trend_AI\\dataset_v2\\images\\train\\0010.jpg"
+    },
+    {
+      "duplicate": "e:\\trend_AI\\output_frames\\0011.jpg",
+      "original": "e:\\trend_AI\\dataset_v2\\images\\train\\0011.jpg"
+    },
+    {
+      "duplicate": "e:\\trend_AI\\output_frames\\0012.jpg",
+      "original": "e:\\trend_AI\\dataset_v2\\images\\train\\0012.jpg"
+    },
+    {
+      "duplicate": "e:\\trend_AI\\output_frames\\0013.jpg",
+      "original": "e:\\trend_AI\\dataset_v2\\images\\train\\0013.jpg"
+    },
+    {
+      "duplicate": "e:\\trend_AI\\output_frames\\0014.jpg",
+      "original": "e:\\trend_AI\\dataset_v2\\images\\val\\0014.jpg"
+    },
+    {
+      "duplicate": "e:\\trend_AI\\output_frames\\0015.jpg",
+      "original": "e:\\trend_AI\\dataset_v2\\images\\train\\0015.jpg"
+    },
+    {
+      "duplicate": "e:\\trend_AI\\output_frames\\0016.jpg",
+      "original": "e:\\trend_AI\\dataset_v2\\images\\train\\0016.jpg"
+    },
+    {
+      "duplicate": "e:\\trend_AI\\output_frames\\0017.jpg",
+      "original": "e:\\trend_AI\\dataset_v2\\images\\val\\0017.jpg"
+    },
+    {
+      "duplicate": "e:\\trend_AI\\output_frames\\0018.jpg",
+      "original": "e:\\trend_AI\\dataset_v2\\images\\train\\0018.jpg"
+    },
+    {
+      "duplicate": "e:\\trend_AI\\output_frames\\0019.jpg",
+      "original": "e:\\trend_AI\\dataset_v2\\images\\train\\0019.jpg"
+    },
+    {
+      "duplicate": "e:\\trend_AI\\output_frames\\0020.jpg",
+      "original": "e:\\trend_AI\\dataset_v2\\images\\val\\0020.jpg"
+    },
+    {
+      "duplicate": "e:\\trend_AI\\output_frames\\0021.jpg",
+      "original": "e:\\trend_AI\\dataset_v2\\images\\train\\0021.jpg"
+    },
+    {
+      "duplicate": "e:\\trend_AI\\output_frames\\0022.jpg",
+      "original": "e:\\trend_AI\\dataset_v2\\images\\train\\0022.jpg"
+    },
+    {
+      "duplicate": "e:\\trend_AI\\output_frames\\0023.jpg",
+      "original": "e:\\trend_AI\\dataset_v2\\images\\train\\0023.jpg"
+    },
+    {
+      "duplicate": "e:\\trend_AI\\output_frames\\0024.jpg",
+      "original": "e:\\trend_AI\\dataset_v2\\images\\train\\0024.jpg"
+    },
+    {
+      "duplicate": "e:\\trend_AI\\output_frames\\0025.jpg",
+      "original": "e:\\trend_AI\\dataset_v2\\images\\train\\0025.jpg"
+    },
+    {
+      "duplicate": "e:\\trend_AI\\output_frames\\0026.jpg",
+      "original": "e:\\trend_AI\\dataset_v2\\images\\train\\0026.jpg"
+    },
+    {
+      "duplicate": "e:\\trend_AI\\output_frames\\0027.jpg",
+      "original": "e:\\trend_AI\\dataset_v2\\images\\val\\0027.jpg"
+    },
+    {
+      "duplicate": "e:\\trend_AI\\output_frames\\0028.jpg",
+      "original": "e:\\trend_AI\\dataset_v2\\images\\train\\0028.jpg"
+    },
+    {
+      "duplicate": "e:\\trend_AI\\output_frames\\0029.jpg",
+      "original": "e:\\trend_AI\\dataset_v2\\images\\train\\0029.jpg"
+    },
+    {
+      "duplicate": "e:\\trend_AI\\output_frames\\0030.jpg",
+      "original": "e:\\trend_AI\\dataset_v2\\images\\val\\0030.jpg"
+    },
+    {
+      "duplicate": "e:\\trend_AI\\output_frames\\0031.jpg",
+      "original": "e:\\trend_AI\\dataset_v2\\images\\train\\0031.jpg"
+    },
+    {
+      "duplicate": "e:\\trend_AI\\output_frames\\0032.jpg",
+      "original": "e:\\trend_AI\\dataset_v2\\images\\train\\0032.jpg"
+    },
+    {
+      "duplicate": "e:\\trend_AI\\output_frames\\0033.jpg",
+      "original": "e:\\trend_AI\\dataset_v2\\images\\train\\0033.jpg"
+    },
+    {
+      "duplicate": "e:\\trend_AI\\output_frames\\0034.jpg",
+      "original": "e:\\trend_AI\\dataset_v2\\images\\train\\0034.jpg"
+    },
+    {
+      "duplicate": "e:\\trend_AI\\output_frames\\0035.jpg",
+      "original": "e:\\trend_AI\\dataset_v2\\images\\train\\0035.jpg"
+    },
+    {
+      "duplicate": "e:\\trend_AI\\output_frames\\0036.jpg",
+      "original": "e:\\trend_AI\\dataset_v2\\images\\train\\0036.jpg"
+    },
+    {
+      "duplicate": "e:\\trend_AI\\output_frames\\0037.jpg",
+      "original": "e:\\trend_AI\\dataset_v2\\images\\train\\0037.jpg"
+    },
+    {
+      "duplicate": "e:\\trend_AI\\output_frames\\0038.jpg",
+      "original": "e:\\trend_AI\\dataset_v2\\images\\train\\0038.jpg"
+    },
+    {
+      "duplicate": "e:\\trend_AI\\output_frames\\0039.jpg",
+      "original": "e:\\trend_AI\\dataset_v2\\images\\val\\0039.jpg"
+    },
+    {
+      "duplicate": "e:\\trend_AI\\output_frames\\0040.jpg",
+      "original": "e:\\trend_AI\\dataset_v2\\images\\train\\0040.jpg"
+    },
+    {
+      "duplicate": "e:\\trend_AI\\output_frames\\0041.jpg",
+      "original": "e:\\trend_AI\\dataset_v2\\images\\train\\0041.jpg"
+    },
+    {
+      "duplicate": "e:\\trend_AI\\output_frames\\0042.jpg",
+      "original": "e:\\trend_AI\\dataset_v2\\images\\train\\0042.jpg"
+    },
+    {
+      "duplicate": "e:\\trend_AI\\output_frames\\0043.jpg",
+      "original": "e:\\trend_AI\\dataset_v2\\images\\train\\0043.jpg"
+    },
+    {
+      "duplicate": "e:\\trend_AI\\output_frames\\0044.jpg",
+      "original": "e:\\trend_AI\\dataset_v2\\images\\train\\0044.jpg"
+    },
+    {
+      "duplicate": "e:\\trend_AI\\output_frames\\0045.jpg",
+      "original": "e:\\trend_AI\\dataset_v2\\images\\train\\0045.jpg"
+    },
+    {
+      "duplicate": "e:\\trend_AI\\output_frames\\0046.jpg",
+      "original": "e:\\trend_AI\\dataset_v2\\images\\train\\0046.jpg"
+    },
+    {
+      "duplicate": "e:\\trend_AI\\output_frames\\0047.jpg",
+      "original": "e:\\trend_AI\\dataset_v2\\images\\train\\0047.jpg"
+    },
+    {
+      "duplicate": "e:\\trend_AI\\output_frames\\0048.jpg",
+      "original": "e:\\trend_AI\\dataset_v2\\images\\val\\0048.jpg"
+    },
+    {
+      "duplicate": "e:\\trend_AI\\output_frames\\0049.jpg",
+      "original": "e:\\trend_AI\\dataset_v2\\images\\val\\0049.jpg"
+    },
+    {
+      "duplicate": "e:\\trend_AI\\output_frames\\0050.jpg",
+      "original": "e:\\trend_AI\\dataset_v2\\images\\train\\0050.jpg"
+    }
+  ],
+  "auto_label_merge": {
+    "timestamp": "2026-11-20T17:12:16.261602",
+    "source": "Data_tong_hop (unlabeled)",
+    "model_used": "e:\\trend_AI\\autolabel_train\\drone_detector\\weights\\best.pt",
+    "conf_threshold": 0.25,
+    "train_epochs": 30,
+    "unlabeled_scanned": 28920,
+    "images_with_detections": 22910,
+    "images_no_detection": 6010,
+    "new_boxes_added": 25022,
+    "duplicates_skipped": 670
+  },
+  "data_train_merge": {
+    "timestamp": "2026-11-21T04:44:33.284893",
+    "stats": {
+      "scanned": 110469,
+      "corrupt": 0,
+      "dup_existing": 4774,
+      "dup_internal": 0,
+      "clean_gt_kept": 16413,
+      "gt_fixed": 240,
+      "queued_autolabel": 89282,
+      "autolabeled_kept": 55985,
+      "autolabel_no_drone": 33297,
+      "total_added": 72398,
+      "boxes_added": 114278
+    }
+  },
+  "precision_998_loop": [
+    {
+      "iteration": 1,
+      "total_images": 104621,
+      "passed_images": 99746,
+      "failed_images": 4875,
+      "pass_rate_percent": 95.3403,
+      "reason_counts": {
+        "empty_0_box": 4242,
+        "hud_distractor_airplane": 251,
+        "off_center_small_or_dark_box": 163,
+        "oversized_box": 117,
+        "extreme_aspect_ratio": 95,
+        "ghost_blank_box": 4,
+        "duplicate_overlap_iou": 3
+      },
+      "rescued_relabeled": 1127,
+      "quarantined_non_drone": 3748
+    },
+    {
+      "iteration": 2,
+      "total_images": 100873,
+      "passed_images": 100873,
+      "failed_images": 0,
+      "pass_rate_percent": 100.0,
+      "reason_counts": {}
+    }
+  ]
+}

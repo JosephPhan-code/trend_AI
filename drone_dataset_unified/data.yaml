@@ -1,0 +1,12 @@
+# Dataset : drone_dataset_unified
+# Version : v3.0.0 (Released: 2026-11-24T15:16:50)
+# SHA256  : 34df6f9935237722a40fdea3a2b47740d04b642abdada95690a773c5702c3010
+# Images  : 320,980 | Boxes: 867,389 | Clean: 100% structural / ~98.9% blind zero-FP
+path: E:\trend_AI\drone_dataset_unified
+train: images/train
+val: images/val
+test: images/test
+
+nc: 1
+names:
+  0: drone

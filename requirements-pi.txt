@@ -1,0 +1,12 @@
+# =============================================================================
+# Môi trường Edge Raspberry Pi 5 + Hailo-8 26 TOPS NPU
+# Lưu ý: Khởi tạo virtualenv với cờ `--system-site-packages` để kế thừa
+#        `hailo_platform` (pyhailort 4.23.0) và `picamera2` từ Raspberry Pi OS:
+#        python3 -m venv --system-site-packages venv
+# =============================================================================
+numpy>=1.26.0,<2.3.0
+opencv-python>=4.9.0
+flask>=3.0.0
+gpiozero>=2.0.1
+lgpio>=0.2.2.0
+ultralytics>=8.3.0

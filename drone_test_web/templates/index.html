@@ -1,0 +1,1639 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YOLO26s-P2 INT8 — Drone Detection & Tracking Lab</title>
+<style>
+  :root {
+    --bg: #0b1120;
+    --panel: #111827;
+    --panel-2: #162033;
+    --border: #24324a;
+    --text: #e2e8f0;
+    --muted: #94a3b8;
+    --accent: #38bdf8;
+    --accent-2: #22d3ee;
+    --green: #22c55e;
+    --amber: #f59e0b;
+    --red: #ef4444;
+    --purple: #a78bfa;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    font-size: 13.5px;
+    line-height: 1.45;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  button {
+    font-family: inherit;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: var(--panel-2);
+    color: var(--text);
+    border-radius: 8px;
+    padding: 7px 12px;
+    font-size: 13px;
+    transition: all 0.15s ease;
+  }
+  button:hover:not(:disabled) { border-color: var(--accent); background: #1d2b44; }
+  button:disabled { opacity: 0.48; cursor: not-allowed; }
+  .btn-primary {
+    background: linear-gradient(135deg, #0284c7, #0ea5e9);
+    border-color: #38bdf8;
+    color: #fff;
+    font-weight: 600;
+  }
+  .btn-primary:hover:not(:disabled) {
+    background: linear-gradient(135deg, #0369a1, #0284c7);
+  }
+  .btn-danger {
+    background: rgba(239, 68, 68, 0.16);
+    border-color: rgba(239, 68, 68, 0.55);
+    color: #fecaca;
+    font-weight: 600;
+  }
+  .btn-danger:hover:not(:disabled) { background: rgba(239, 68, 68, 0.28); }
+  .btn-sm { padding: 4px 9px; font-size: 12px; border-radius: 6px; }
+
+  /* Header */
+  header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 20px;
+    background: #0f172a;
+    border-bottom: 1px solid var(--border);
+  }
+  .brand { display: flex; align-items: center; gap: 10px; }
+  .brand-dot {
+    width: 11px; height: 11px; border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 10px var(--green);
+  }
+  .brand h1 { margin: 0; font-size: 16px; font-weight: 700; letter-spacing: 0.2px; }
+  .brand small { color: var(--muted); font-size: 12px; display: block; }
+  .quant-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+  }
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    font-size: 12px;
+    color: var(--text);
+  }
+  .pill strong { color: var(--accent); font-weight: 600; }
+  .pill.good strong { color: var(--green); }
+  .pill.warn strong { color: var(--amber); }
+
+  /* Layout */
+  .layout {
+    display: grid;
+    grid-template-columns: 340px 1fr;
+    gap: 16px;
+    padding: 16px 20px 28px;
+    max-width: 1680px;
+    margin: 0 auto;
+  }
+  @media (max-width: 1020px) {
+    .layout { grid-template-columns: 1fr; }
+  }
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px;
+  }
+  .card-title {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--muted);
+    margin: 0 0 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  /* Sidebar */
+  .sidebar { display: flex; flex-direction: column; gap: 14px; }
+  .dropzone {
+    border: 2px dashed #334155;
+    border-radius: 10px;
+    padding: 18px 14px;
+    text-align: center;
+    cursor: pointer;
+    background: rgba(15, 23, 42, 0.7);
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .dropzone:hover, .dropzone.dragover {
+    border-color: var(--accent);
+    background: rgba(56, 189, 248, 0.08);
+  }
+  .dropzone p { margin: 4px 0; }
+  .dropzone .sub { color: var(--muted); font-size: 12px; }
+  .file-info {
+    margin-top: 10px;
+    padding: 9px 10px;
+    border-radius: 8px;
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    font-size: 12px;
+  }
+  .file-info .fname { font-weight: 600; color: var(--accent); word-break: break-all; }
+  .file-meta-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 4px 8px;
+    margin-top: 6px;
+    color: var(--muted);
+  }
+  .file-meta-grid span b { color: var(--text); font-weight: 600; }
+
+  .field { margin-bottom: 11px; }
+  .field:last-child { margin-bottom: 0; }
+  .field label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12.5px;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: #cbd5e1;
+  }
+  .field label .val {
+    color: var(--accent);
+    font-family: ui-monospace, Consolas, monospace;
+    font-size: 12px;
+  }
+  select, input[type="range"] { width: 100%; }
+  select {
+    background: var(--panel-2);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 7px 9px;
+    font-size: 13px;
+  }
+  select:disabled { opacity: 0.55; }
+  input[type="range"] { accent-color: var(--accent); cursor: pointer; }
+  .hint { font-size: 11.5px; color: var(--muted); margin-top: 3px; }
+
+  .segmented {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    background: #0b1222;
+    padding: 4px;
+    border-radius: 9px;
+    border: 1px solid var(--border);
+  }
+  .segmented button {
+    border: none;
+    background: transparent;
+    padding: 6px 8px;
+    font-weight: 600;
+    color: var(--muted);
+  }
+  .segmented button.active {
+    background: var(--panel-2);
+    color: var(--accent);
+    border: 1px solid rgba(56, 189, 248, 0.45);
+  }
+
+  .checks {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px 10px;
+  }
+  .checks label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 500;
+    font-size: 12.5px;
+    margin: 0;
+    cursor: pointer;
+  }
+  .checks input { accent-color: var(--accent); }
+
+  .action-row { display: grid; grid-template-columns: 1fr auto; gap: 8px; margin-top: 12px; }
+
+  /* Main Stage */
+  .main-col { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+  .stage-header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+  .tab-btn {
+    padding: 6px 12px;
+    font-size: 12.5px;
+    font-weight: 600;
+    border-radius: 8px;
+  }
+  .tab-btn.active {
+    background: rgba(56, 189, 248, 0.16);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .export-bar { display: flex; gap: 6px; flex-wrap: wrap; }
+
+  .viewport {
+    position: relative;
+    background: #050811;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    min-height: 380px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .empty-state {
+    text-align: center;
+    padding: 48px 20px;
+    color: var(--muted);
+    max-width: 460px;
+  }
+  .empty-state h2 { margin: 0 0 8px; font-size: 17px; color: var(--text); }
+
+  .live-wrap, .rendered-wrap { width: 100%; display: flex; flex-direction: column; align-items: center; position: relative; }
+  .live-wrap img { max-width: 100%; max-height: 62vh; display: block; object-fit: contain; }
+  .rendered-wrap video { width: 100%; max-height: 62vh; background: #000; display: block; }
+  .preview-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: rgba(5, 8, 17, 0.45);
+    backdrop-filter: blur(2px);
+  }
+  .preview-overlay .btn-primary {
+    padding: 11px 22px;
+    font-size: 14.5px;
+    box-shadow: 0 8px 24px rgba(2, 132, 199, 0.45);
+  }
+  .auto-start-row {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin-top: 10px;
+    font-size: 12.5px;
+    color: #cbd5e1;
+    cursor: pointer;
+  }
+  .auto-start-row input { accent-color: var(--accent); }
+
+  /* Interactive Canvas Replay */
+  .replay-wrap { width: 100%; display: flex; flex-direction: column; }
+  .canvas-stage {
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #000;
+  }
+  .canvas-stage video {
+    width: 100%;
+    max-height: 60vh;
+    display: block;
+    object-fit: contain;
+  }
+  .canvas-stage canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+  .replay-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    background: #0e1627;
+    border-top: 1px solid var(--border);
+  }
+  .replay-controls input[type="range"] { flex: 1; min-width: 140px; }
+  .replay-time {
+    font-family: ui-monospace, Consolas, monospace;
+    font-size: 12px;
+    color: var(--muted);
+    min-width: 135px;
+    text-align: right;
+  }
+  .replay-toggles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    padding: 7px 12px;
+    background: #0b1120;
+    border-top: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .replay-toggles label { display: inline-flex; align-items: center; gap: 4px; cursor: pointer; }
+
+  /* Progress & Live Strip */
+  .progress-box { margin-top: 10px; }
+  .progress-track {
+    height: 8px;
+    background: #0b1222;
+    border-radius: 999px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #0284c7, #22d3ee, #22c55e);
+    transition: width 0.2s ease;
+  }
+  .live-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 9px;
+  }
+
+  /* KPI Grid */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 10px;
+  }
+  @media (max-width: 1200px) { .kpi-grid { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 640px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
+  .kpi {
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 12px;
+  }
+  .kpi .k-label { font-size: 11.5px; color: var(--muted); }
+  .kpi .k-val {
+    font-size: 19px;
+    font-weight: 700;
+    margin-top: 2px;
+    color: var(--text);
+    font-family: ui-monospace, Consolas, monospace;
+  }
+  .kpi .k-sub { font-size: 11px; color: var(--muted); }
+
+  /* Timeline */
+  .timeline-box { margin-top: 14px; }
+  #timelineCanvas {
+    width: 100%;
+    height: 112px;
+    display: block;
+    background: #0b1222;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    cursor: crosshair;
+  }
+
+  /* Tables & History */
+  .split-bottom {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 16px;
+  }
+  @media (max-width: 1100px) { .split-bottom { grid-template-columns: 1fr; } }
+  table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  th, td {
+    text-align: left;
+    padding: 7px 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  th { color: var(--muted); font-weight: 600; font-size: 11.5px; text-transform: uppercase; }
+  tr:hover td { background: rgba(56, 189, 248, 0.05); }
+  .id-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 700;
+    font-family: ui-monospace, Consolas, monospace;
+  }
+  .swatch { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+
+  .history-list { display: flex; flex-direction: column; gap: 8px; max-height: 290px; overflow-y: auto; }
+  .history-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--panel-2);
+    cursor: pointer;
+  }
+  .history-item.active { border-color: var(--accent); background: rgba(56, 189, 248, 0.09); }
+  .history-item .h-meta { font-size: 11.5px; color: var(--muted); }
+  .status-tag {
+    padding: 2px 7px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .st-completed { background: rgba(34, 197, 94, 0.18); color: #86efac; }
+  .st-running, .st-queued { background: rgba(56, 189, 248, 0.18); color: #7dd3fc; }
+  .st-stopped { background: rgba(245, 158, 11, 0.18); color: #fde68a; }
+  .st-error { background: rgba(239, 68, 68, 0.18); color: #fca5a5; }
+  .st-uploaded { background: rgba(148, 163, 184, 0.18); color: #cbd5e1; }
+
+  .banner-warn {
+    padding: 12px 14px;
+    margin: 12px;
+    border-radius: 8px;
+    background: rgba(245, 158, 11, 0.14);
+    border: 1px solid rgba(245, 158, 11, 0.5);
+    color: #fde68a;
+    font-size: 12.5px;
+  }
+  .banner-error {
+    padding: 12px 14px;
+    margin-top: 10px;
+    border-radius: 8px;
+    background: rgba(239, 68, 68, 0.14);
+    border: 1px solid rgba(239, 68, 68, 0.5);
+    color: #fecaca;
+    font-size: 12.5px;
+  }
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <span class="brand-dot" id="serverDot"></span>
+    <div>
+      <h1>YOLO26s-P2 INT8 — Drone Detection &amp; Tracking Lab</h1>
+      <small id="hwSub">Đang tải thông tin model &amp; phần cứng...</small>
+    </div>
+  </div>
+  <div class="quant-strip" id="quantStrip">
+    <span class="pill">Đang tải thông số INT8...</span>
+  </div>
+</header>
+
+<div class="layout">
+  <!-- LEFT SIDEBAR -->
+  <aside class="sidebar">
+    <div class="card">
+      <div class="card-title">1. Tải Video Test</div>
+      <div class="dropzone" id="dropzone">
+        <input type="file" id="fileInput" accept="video/*,.mp4,.avi,.mov,.mkv,.webm,.m4v" class="hidden">
+        <p><strong>Kéo &amp; thả video vào đây</strong></p>
+        <p class="sub">hoặc bấm để chọn file (.mp4, .avi, .mov, .mkv, .webm)</p>
+      </div>
+      <div class="file-info hidden" id="fileInfo">
+        <div class="fname" id="infoFilename">-</div>
+        <div class="file-meta-grid">
+          <span>Độ phân giải: <b id="infoRes">-</b></span>
+          <span>FPS: <b id="infoFps">-</b></span>
+          <span>Thời lượng: <b id="infoDur">-</b></span>
+          <span>Frames: <b id="infoFrames">-</b></span>
+        </div>
+      </div>
+      <label class="auto-start-row">
+        <input type="checkbox" id="chkAutoStart" checked>
+        <span>Tự động chạy ngay sau khi tải video lên</span>
+      </label>
+      <div class="action-row">
+        <button type="button" id="btnStart" class="btn-primary" disabled>Bắt đầu Detect &amp; Track</button>
+        <button type="button" id="btnStop" class="btn-danger hidden">Dừng</button>
+      </div>
+      <div class="banner-error hidden" id="errorBox"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">2. Cấu hình Model &amp; Tracking</div>
+
+      <div class="field">
+        <label>Phiên bản Model</label>
+        <select id="modelSelect"></select>
+        <div class="hint" id="modelHint">Mặc định dùng bản INT8 ONNX tối ưu CPU.</div>
+      </div>
+
+      <div class="field">
+        <label>Chế độ chạy</label>
+        <div class="segmented" id="modeSegmented">
+          <button type="button" data-mode="track" class="active">Detect + Track</button>
+          <button type="button" data-mode="detect">Detect Only</button>
+        </div>
+      </div>
+
+      <div class="field" id="trackerField">
+        <label>Thuật toán Tracking</label>
+        <select id="trackerSelect"></select>
+      </div>
+
+      <div class="field">
+        <label>Ngưỡng Confidence <span class="val" id="confVal">0.25</span></label>
+        <input type="range" id="confRange" min="0.05" max="0.90" step="0.01" value="0.25">
+      </div>
+
+      <div class="field">
+        <label>Ngưỡng NMS IoU <span class="val" id="iouVal">0.45</span></label>
+        <input type="range" id="iouRange" min="0.10" max="0.90" step="0.05" value="0.45">
+      </div>
+
+      <div class="field">
+        <label>Image Size (imgsz) <span class="val" id="imgszVal">640</span></label>
+        <select id="imgszSelect">
+          <option value="640" selected>640 × 640 (Chuẩn INT8 / ONNX)</option>
+          <option value="960">960 × 960 (Chỉ PyTorch .pt — drone siêu nhỏ)</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Frame Stride (bước nhảy frame) <span class="val" id="strideVal">1</span></label>
+        <input type="range" id="strideRange" min="1" max="3" step="1" value="1">
+        <div class="hint">1 = xử lý mọi frame; 2–3 = tăng tốc nhanh gấp 2–3×</div>
+      </div>
+
+      <div class="field">
+        <label>Độ dài vệt quỹ đạo (frames) <span class="val" id="trailVal">40</span></label>
+        <input type="range" id="trailRange" min="0" max="120" step="5" value="40">
+      </div>
+
+      <div class="field">
+        <label>Hiển thị trực quan</label>
+        <div class="checks">
+          <label><input type="checkbox" id="chkBoxes" checked> Bounding Box</label>
+          <label><input type="checkbox" id="chkIds" checked> Track ID</label>
+          <label><input type="checkbox" id="chkConf" checked> Confidence</label>
+          <label><input type="checkbox" id="chkTrails" checked> Vệt quỹ đạo</label>
+          <label><input type="checkbox" id="chkPending" checked> Pending Dets</label>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN STAGE -->
+  <main class="main-col">
+    <section class="card">
+      <div class="stage-header">
+        <div class="tabs">
+          <button type="button" class="tab-btn active" id="tabLive" data-tab="live">Live Stream</button>
+          <button type="button" class="tab-btn" id="tabReplay" data-tab="replay" disabled>Interactive Canvas Replay</button>
+          <button type="button" class="tab-btn" id="tabRendered" data-tab="rendered" disabled>Video Đã Render</button>
+          <button type="button" class="btn-primary btn-sm hidden" id="btnStageStart">▶ Bắt đầu Detect &amp; Track</button>
+        </div>
+        <div class="export-bar">
+          <button type="button" class="btn-sm" id="btnDlVideo" disabled>⬇ Video Annotated</button>
+          <button type="button" class="btn-sm" id="btnDlJson" disabled>⬇ JSON</button>
+          <button type="button" class="btn-sm" id="btnDlCsv" disabled>⬇ CSV</button>
+        </div>
+      </div>
+
+      <div class="viewport">
+        <div class="empty-state" id="emptyState">
+          <h2>Sẵn sàng test model YOLO26s-P2 INT8</h2>
+          <p>Tải lên một video drone ở cột bên trái, chọn cấu hình Detect / TrackTrack và bấm <b>Bắt đầu Detect &amp; Track</b> để xem kết quả theo thời gian thực.</p>
+        </div>
+
+        <div class="live-wrap hidden" id="liveWrap">
+          <img id="liveImg" alt="Live Detection Stream">
+          <div class="preview-overlay hidden" id="previewStartOverlay">
+            <button type="button" class="btn-primary" id="btnOverlayStart">▶ Bắt đầu Detect &amp; Track video này</button>
+            <small style="color:#cbd5e1;">Video đã tải lên — bấm để chạy model YOLO26s-P2 INT8</small>
+          </div>
+        </div>
+
+        <div class="replay-wrap hidden" id="replayWrap">
+          <div class="canvas-stage" id="canvasStage">
+            <video id="replayVideo" preload="auto" playsinline></video>
+            <canvas id="overlayCanvas"></canvas>
+          </div>
+          <div class="replay-controls">
+            <button type="button" class="btn-sm" id="btnPlayPause">▶ Phát</button>
+            <button type="button" class="btn-sm" id="btnStepBack" title="Lùi 1 frame (←)">◀ 1F</button>
+            <button type="button" class="btn-sm" id="btnStepFwd" title="Tiến 1 frame (→)">1F ▶</button>
+            <input type="range" id="seekBar" min="0" max="100" step="0.01" value="0">
+            <select id="speedSelect" style="width:auto; padding:4px 7px; font-size:12px;">
+              <option value="0.25">0.25×</option>
+              <option value="0.5">0.5×</option>
+              <option value="1" selected>1×</option>
+              <option value="2">2×</option>
+            </select>
+            <span class="replay-time" id="replayTime">0.00s / 0.00s</span>
+          </div>
+          <div class="replay-toggles">
+            <span>Lớp phủ Replay:</span>
+            <label><input type="checkbox" id="rpBoxes" checked> Boxes</label>
+            <label><input type="checkbox" id="rpIds" checked> Track ID</label>
+            <label><input type="checkbox" id="rpConf" checked> Conf</label>
+            <label><input type="checkbox" id="rpTrails" checked> Trails</label>
+            <label><input type="checkbox" id="rpPending" checked> Pending</label>
+            <span style="margin-left:auto;">Phím tắt: <b>Space</b> Phát/Dừng, <b>← / →</b> Từng frame</span>
+          </div>
+        </div>
+
+        <div class="rendered-wrap hidden" id="renderedWrap">
+          <div class="banner-warn hidden" id="codecWarn">
+            Trình duyệt không hỗ trợ phát trực tiếp codec <code>mp4v</code>. Hãy dùng tab <b>Interactive Canvas Replay</b> để xem mượt mà trên trình duyệt, hoặc bấm <b>⬇ Video Annotated</b> để tải file MP4 về xem bằng VLC/PotPlayer.
+          </div>
+          <video id="renderedVideo" controls preload="metadata"></video>
+        </div>
+      </div>
+
+      <div class="progress-box hidden" id="progressBox">
+        <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+        <div class="live-pills" id="livePills"></div>
+      </div>
+    </section>
+
+    <!-- ANALYTICS -->
+    <section class="card">
+      <div class="card-title">
+        <span>Phân tích Detection &amp; Tracking</span>
+        <span id="runBadge" style="font-weight:500; text-transform:none; color:var(--accent);"></span>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi">
+          <div class="k-label">Latency trung bình</div>
+          <div class="k-val" id="kpiMs">-</div>
+          <div class="k-sub">ms / frame</div>
+        </div>
+        <div class="kpi">
+          <div class="k-label">Tốc độ xử lý</div>
+          <div class="k-val" id="kpiFps">-</div>
+          <div class="k-sub">FPS suy luận</div>
+        </div>
+        <div class="kpi">
+          <div class="k-label">Tỷ lệ có Drone</div>
+          <div class="k-val" id="kpiDetRate">-</div>
+          <div class="k-sub" id="kpiDetSub">-</div>
+        </div>
+        <div class="kpi">
+          <div class="k-label">Số Track ID</div>
+          <div class="k-val" id="kpiUniqueIds">-</div>
+          <div class="k-sub">ID duy nhất</div>
+        </div>
+        <div class="kpi">
+          <div class="k-label">Peak đồng thời</div>
+          <div class="k-val" id="kpiPeak">-</div>
+          <div class="k-sub">drone / frame</div>
+        </div>
+        <div class="kpi">
+          <div class="k-label">Confidence TB</div>
+          <div class="k-val" id="kpiConf">-</div>
+          <div class="k-sub" id="kpiTotalDets">-</div>
+        </div>
+      </div>
+
+      <div class="timeline-box">
+        <div class="card-title" style="margin-bottom:6px;">
+          <span>Biểu đồ Detection Timeline (Bấm vào biểu đồ để tua video tới đúng thời điểm)</span>
+          <span id="timelineHover" style="font-weight:500; text-transform:none; color:var(--accent);"></span>
+        </div>
+        <canvas id="timelineCanvas"></canvas>
+      </div>
+    </section>
+
+    <!-- TRACK TABLE & HISTORY -->
+    <section class="split-bottom">
+      <div class="card">
+        <div class="card-title">Danh sách Track ID phát hiện được</div>
+        <div style="overflow-x:auto; max-height:290px; overflow-y:auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Xuất hiện</th>
+                <th>Kết thúc</th>
+                <th>Thời lượng</th>
+                <th>Frames</th>
+                <th>Conf TB</th>
+                <th>Max</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="trackTableBody">
+              <tr><td colspan="8" style="color:var(--muted); text-align:center;">Chưa có dữ liệu tracking.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">
+          <span>Lịch sử các lần chạy test</span>
+          <button type="button" class="btn-sm" id="btnRefreshHistory">Làm mới</button>
+        </div>
+        <div class="history-list" id="historyList">
+          <div style="color:var(--muted);">Chưa có phiên test nào.</div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script>
+const state = {
+  info: null,
+  activeJobId: null,
+  activeJob: null,
+  tracksData: null,
+  pollTimer: null,
+  activeTab: "live",
+  mode: "track",
+  rafId: null,
+};
+
+const $ = (id) => document.getElementById(id);
+
+function fmtSec(s) {
+  if (s == null || isNaN(s)) return "0.00s";
+  return Number(s).toFixed(2) + "s";
+}
+
+function showError(msg) {
+  const box = $("errorBox");
+  if (!msg) {
+    box.classList.add("hidden");
+    box.textContent = "";
+  } else {
+    box.textContent = msg;
+    box.classList.remove("hidden");
+  }
+}
+
+async function fetchJson(url, opts) {
+  const res = await fetch(url, opts);
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+  return data;
+}
+
+function renderQuantStrip(info) {
+  const strip = $("quantStrip");
+  const hw = info.hardware || {};
+  $("hwSub").textContent = `CPU ${hw.cpu_threads || "?"} luồng` +
+    (hw.cuda_available ? ` | GPU: ${hw.gpu_name}` : " | CPU Mode") +
+    ` | Codec render: ${info.codec.fourcc} (${info.codec.ext})`;
+
+  const qr = info.quantization_report;
+  if (!qr) {
+    strip.innerHTML = `<span class="pill warn">Chưa tìm thấy báo cáo INT8 (đang dùng các model hiện có)</span>`;
+    return;
+  }
+  const sz = qr.file_sizes_mb || {};
+  const acc = qr.accuracy || {};
+  const bench = qr.benchmark_cpu || {};
+  const pills = [];
+  if (sz.best_pt && sz.best_int8_onnx) {
+    pills.push(`<span class="pill good">Dung lượng: <strong>${sz.best_pt} MB → ${sz.best_int8_onnx} MB</strong> (-${sz.reduction_vs_pt_pct}%)</span>`);
+  }
+  if (acc.fp32_pt && acc.int8_onnx) {
+    pills.push(`<span class="pill">mAP50: <strong>FP32 ${acc.fp32_pt.mAP50.toFixed(3)} vs INT8 ${acc.int8_onnx.mAP50.toFixed(3)}</strong> (${acc.delta_mAP50 >= 0 ? "+" : ""}${acc.delta_mAP50.toFixed(3)})</span>`);
+  }
+  if (bench.ort_raw_int8) {
+    const fpMs = bench.ort_raw_fp32?.median_ms ?? bench.ort_raw_fp32?.mean_ms;
+    const int8Ms = bench.ort_raw_int8.median_ms ?? bench.ort_raw_int8.mean_ms;
+    const cls = (bench.ort_speedup_x || 0) >= 1.0 ? "pill good" : "pill";
+    pills.push(`<span class="${cls}">ORT CPU (median): <strong>INT8 ${int8Ms} ms</strong>${fpMs ? ` vs FP32 ${fpMs} ms` : ""}</span>`);
+  }
+  strip.innerHTML = pills.join("");
+}
+
+function populateSelectors(info) {
+  const mSel = $("modelSelect");
+  mSel.innerHTML = "";
+  for (const m of info.models || []) {
+    const opt = document.createElement("option");
+    opt.value = m.key;
+    opt.textContent = `${m.label} [${m.size_mb} MB]`;
+    if (m.default) opt.selected = true;
+    mSel.appendChild(opt);
+  }
+
+  const tSel = $("trackerSelect");
+  tSel.innerHTML = "";
+  for (const t of info.trackers || []) {
+    const opt = document.createElement("option");
+    opt.value = t.key;
+    opt.textContent = t.label;
+    if (t.default) opt.selected = true;
+    tSel.appendChild(opt);
+  }
+  syncModelConstraint();
+}
+
+function syncModelConstraint() {
+  const key = $("modelSelect").value;
+  const m = (state.info?.models || []).find((x) => x.key === key);
+  const imgszSel = $("imgszSelect");
+  if (m && m.imgsz_fixed) {
+    imgszSel.value = String(m.imgsz_fixed);
+    imgszSel.disabled = true;
+    $("imgszVal").textContent = String(m.imgsz_fixed);
+    $("modelHint").textContent = "Model ONNX chạy cố định 640×640 trên CPU với tốc độ cao.";
+  } else {
+    imgszSel.disabled = false;
+    $("imgszVal").textContent = imgszSel.value;
+    $("modelHint").textContent = "Model PyTorch .pt hỗ trợ đổi imgsz 640 hoặc 960.";
+  }
+}
+
+function setMode(mode) {
+  state.mode = mode;
+  document.querySelectorAll("#modeSegmented button").forEach((b) => {
+    b.classList.toggle("active", b.dataset.mode === mode);
+  });
+  $("trackerSelect").disabled = (mode === "detect");
+  $("trackerField").style.opacity = (mode === "detect") ? "0.5" : "1";
+  updateStartButtonLabel();
+}
+
+function updateStartButtonLabel() {
+  const btn = $("btnStart");
+  const stBtn = $("btnStageStart");
+  if (!state.activeJobId) {
+    btn.disabled = true;
+    btn.textContent = "Bắt đầu Detect & Track";
+    stBtn.classList.add("hidden");
+    return;
+  }
+  const st = state.activeJob?.status;
+  if (st === "running" || st === "queued") {
+    btn.disabled = true;
+    stBtn.classList.add("hidden");
+  } else if (st === "completed" || st === "stopped" || st === "error") {
+    btn.disabled = false;
+    btn.textContent = state.mode === "track" ? "Chạy lại Detect & Track trên video này" : "Chạy lại Detect Only trên video này";
+    stBtn.textContent = state.mode === "track" ? "↻ Chạy lại Detect & Track" : "↻ Chạy lại Detect Only";
+    stBtn.classList.remove("hidden");
+  } else {
+    btn.disabled = false;
+    btn.textContent = state.mode === "track" ? "Bắt đầu Detect & Track" : "Bắt đầu Detect Only";
+    stBtn.textContent = state.mode === "track" ? "▶ Bắt đầu Detect & Track" : "▶ Bắt đầu Detect Only";
+    stBtn.classList.remove("hidden");
+  }
+}
+
+function setTab(tab) {
+  state.activeTab = tab;
+  document.querySelectorAll(".tab-btn").forEach((b) => {
+    b.classList.toggle("active", b.dataset.tab === tab);
+  });
+  $("emptyState").classList.add("hidden");
+  $("liveWrap").classList.toggle("hidden", tab !== "live");
+  $("replayWrap").classList.toggle("hidden", tab !== "replay");
+  $("renderedWrap").classList.toggle("hidden", tab !== "rendered");
+
+  if (tab === "replay") {
+    resizeOverlayCanvas();
+    drawReplayOverlay();
+  }
+}
+
+async function uploadFile(file) {
+  if (!file) return;
+  showError("");
+  const fd = new FormData();
+  fd.append("file", file);
+  $("dropzone").innerHTML = `<p><b>Đang tải lên &amp; đọc thông tin video...</b></p><p class="sub">${file.name}</p>`;
+  try {
+    const job = await fetchJson("/api/upload", { method: "POST", body: fd });
+    applySelectedJob(job);
+    await refreshHistory();
+    if ($("chkAutoStart")?.checked) {
+      await startInference();
+    }
+  } catch (err) {
+    showError(err.message);
+  } finally {
+    $("dropzone").innerHTML = `
+      <input type="file" id="fileInput" accept="video/*,.mp4,.avi,.mov,.mkv,.webm,.m4v" class="hidden">
+      <p><strong>Kéo &amp; thả video vào đây</strong></p>
+      <p class="sub">hoặc bấm để chọn file (.mp4, .avi, .mov, .mkv, .webm)</p>`;
+    bindDropzoneInput();
+  }
+}
+
+function applySelectedJob(job) {
+  state.activeJobId = job.job_id;
+  state.activeJob = job;
+  state.tracksData = null;
+
+  const vm = job.video_meta || {};
+  $("fileInfo").classList.remove("hidden");
+  $("infoFilename").textContent = vm.filename || job.job_id;
+  $("infoRes").textContent = `${vm.width || 0}×${vm.height || 0}`;
+  $("infoFps").textContent = `${vm.fps || 0}`;
+  $("infoDur").textContent = fmtSec(vm.duration_s || 0);
+  $("infoFrames").textContent = `${vm.total_frames || 0}`;
+
+  updateStartButtonLabel();
+  updateJobUI(job);
+
+  if (job.status === "uploaded") {
+    setTab("live");
+    $("liveImg").src = `/api/jobs/${job.job_id}/preview?t=${Date.now()}`;
+    $("previewStartOverlay").classList.remove("hidden");
+    $("tabReplay").disabled = true;
+    $("tabRendered").disabled = true;
+    $("btnDlVideo").disabled = true;
+    $("btnDlJson").disabled = true;
+    $("btnDlCsv").disabled = true;
+  } else if (job.status === "running" || job.status === "queued") {
+    setTab("live");
+    $("previewStartOverlay").classList.add("hidden");
+    $("liveImg").src = `/api/jobs/${job.job_id}/stream?t=${Date.now()}`;
+    startPolling(job.job_id);
+  } else if (job.status === "completed" || job.status === "stopped") {
+    $("previewStartOverlay").classList.add("hidden");
+    onJobFinished(job);
+  } else if (job.status === "error") {
+    $("previewStartOverlay").classList.add("hidden");
+    showError(job.error || "Xử lý video thất bại.");
+  }
+}
+
+function collectConfig() {
+  return {
+    model_key: $("modelSelect").value,
+    mode: state.mode,
+    tracker_key: $("trackerSelect").value,
+    conf: parseFloat($("confRange").value),
+    iou: parseFloat($("iouRange").value),
+    imgsz: parseInt($("imgszSelect").value, 10),
+    frame_stride: parseInt($("strideRange").value, 10),
+    trail_len: parseInt($("trailRange").value, 10),
+    show_boxes: $("chkBoxes").checked,
+    show_ids: $("chkIds").checked,
+    show_conf: $("chkConf").checked,
+    show_trails: $("chkTrails").checked,
+    show_pending: $("chkPending").checked,
+  };
+}
+
+async function startInference() {
+  if (!state.activeJobId) return;
+  showError("");
+  try {
+    const job = await fetchJson(`/api/jobs/${state.activeJobId}/start`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(collectConfig()),
+    });
+    state.activeJobId = job.job_id;
+    state.activeJob = job;
+    state.tracksData = null;
+
+    $("tabReplay").disabled = true;
+    $("tabRendered").disabled = true;
+    $("btnDlVideo").disabled = true;
+    $("btnDlJson").disabled = true;
+    $("btnDlCsv").disabled = true;
+
+    setTab("live");
+    $("previewStartOverlay").classList.add("hidden");
+    $("liveImg").src = `/api/jobs/${job.job_id}/stream?t=${Date.now()}`;
+    $("progressBox").classList.remove("hidden");
+    $("btnStop").classList.remove("hidden");
+    updateStartButtonLabel();
+    startPolling(job.job_id);
+    await refreshHistory();
+  } catch (err) {
+    showError(err.message);
+  }
+}
+
+async function stopInference() {
+  if (!state.activeJobId) return;
+  try {
+    await fetchJson(`/api/jobs/${state.activeJobId}/stop`, { method: "POST" });
+  } catch (err) {
+    showError(err.message);
+  }
+}
+
+function startPolling(jobId) {
+  if (state.pollTimer) clearInterval(state.pollTimer);
+  const tick = async () => {
+    try {
+      const job = await fetchJson(`/api/jobs/${jobId}/status`);
+      if (state.activeJobId !== jobId) return;
+      state.activeJob = job;
+      updateJobUI(job);
+      if (job.status === "completed" || job.status === "stopped" || job.status === "error") {
+        clearInterval(state.pollTimer);
+        state.pollTimer = null;
+        if (job.status === "error") {
+          showError(job.error || "Xử lý video thất bại.");
+        } else {
+          await onJobFinished(job);
+        }
+        await refreshHistory();
+      }
+    } catch (e) {
+      // keep retrying briefly
+    }
+  };
+  tick();
+  state.pollTimer = setInterval(tick, 350);
+}
+
+function updateJobUI(job) {
+  const isActive = job.status === "running" || job.status === "queued";
+  $("btnStop").classList.toggle("hidden", !isActive);
+  $("previewStartOverlay").classList.toggle("hidden", job.status !== "uploaded");
+  updateStartButtonLabel();
+
+  if (job.status === "uploaded") {
+    $("progressBox").classList.add("hidden");
+    return;
+  }
+
+  $("progressBox").classList.remove("hidden");
+  $("progressFill").style.width = `${job.progress_pct || 0}%`;
+
+  const pills = [
+    `<span class="pill">Trạng thái: <strong>${job.status.toUpperCase()}</strong></span>`,
+    `<span class="pill">Frame: <strong>${job.current_frame}/${job.total_frames}</strong> (${job.progress_pct}%)</span>`,
+    `<span class="pill">Latency: <strong>${job.avg_infer_ms.toFixed(1)} ms</strong> (${job.avg_fps.toFixed(1)} FPS)</span>`,
+    `<span class="pill">Active: <strong>${job.active_tracks}</strong> | IDs: <strong>${job.unique_track_ids}</strong></span>`,
+  ];
+  if (isActive) {
+    pills.push(`<span class="pill">Còn lại: <strong>~${job.eta_seconds.toFixed(1)}s</strong></span>`);
+  }
+  $("livePills").innerHTML = pills.join("");
+
+  const cfg = job.config || {};
+  $("runBadge").textContent = cfg.model_short
+    ? `${cfg.model_short} · ${cfg.mode === "track" ? cfg.tracker_label : "Detect Only"} · conf=${cfg.conf}`
+    : "";
+
+  // Live KPI updates
+  const s = job.summary || {};
+  $("kpiMs").textContent = (s.avg_infer_ms ?? job.avg_infer_ms ?? 0).toFixed(1);
+  $("kpiFps").textContent = (s.avg_fps ?? job.avg_fps ?? 0).toFixed(1);
+  const detRate = s.detection_rate_pct ?? (job.processed_frames > 0 ? (job.frames_with_drone / job.processed_frames * 100) : 0);
+  $("kpiDetRate").textContent = `${Number(detRate).toFixed(1)}%`;
+  $("kpiDetSub").textContent = `${s.frames_with_drone ?? job.frames_with_drone}/${s.processed_frames ?? job.processed_frames} frames`;
+  $("kpiUniqueIds").textContent = String(s.unique_track_ids ?? job.unique_track_ids ?? 0);
+  $("kpiPeak").textContent = String(s.peak_simultaneous ?? "-");
+  $("kpiConf").textContent = s.avg_conf != null ? s.avg_conf.toFixed(3) : "-";
+  $("kpiTotalDets").textContent = s.total_detections != null ? `${s.total_detections} boxes` : "-";
+}
+
+async function onJobFinished(job) {
+  updateJobUI(job);
+  $("btnDlVideo").disabled = !job.output_ready;
+  $("btnDlJson").disabled = !job.tracks_json_ready;
+  $("btnDlCsv").disabled = !job.tracks_csv_ready;
+  $("tabReplay").disabled = !job.tracks_json_ready;
+  $("tabRendered").disabled = !job.output_ready;
+
+  if (job.tracks_json_ready) {
+    try {
+      const tracks = await fetchJson(`/api/jobs/${job.job_id}/tracks.json`);
+      state.tracksData = tracks;
+      renderTrackTable(tracks.summary?.tracks || []);
+      drawTimeline();
+      setupReplay(job, tracks);
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  if (job.output_ready) {
+    $("codecWarn").classList.toggle("hidden", !!job.browser_playable);
+    const rv = $("renderedVideo");
+    if (job.browser_playable) {
+      rv.classList.remove("hidden");
+      rv.src = `/api/jobs/${job.job_id}/output?t=${Date.now()}`;
+    } else {
+      rv.classList.add("hidden");
+      rv.removeAttribute("src");
+    }
+  }
+
+  // Auto-pick Rendered tab if browser_playable else Interactive Canvas Replay
+  if (job.output_ready && job.browser_playable) {
+    setTab("rendered");
+  } else if (job.tracks_json_ready) {
+    setTab("replay");
+  }
+}
+
+function renderTrackTable(tracks) {
+  const tbody = $("trackTableBody");
+  if (!tracks.length) {
+    tbody.innerHTML = `<tr><td colspan="8" style="color:var(--muted); text-align:center;">Không phát hiện track ID nào (thử giảm Confidence hoặc chuyển Detect Only).</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = tracks.map((t) => `
+    <tr>
+      <td><span class="id-badge"><span class="swatch" style="background:${t.color_hex}"></span>#${t.track_id}</span></td>
+      <td>${fmtSec(t.first_time)} <small style="color:var(--muted)">(F${t.first_frame})</small></td>
+      <td>${fmtSec(t.last_time)} <small style="color:var(--muted)">(F${t.last_frame})</small></td>
+      <td>${fmtSec(t.duration_s)}</td>
+      <td>${t.frame_count}</td>
+      <td>${t.avg_conf.toFixed(3)}</td>
+      <td>${t.max_conf.toFixed(3)}</td>
+      <td><button type="button" class="btn-sm" onclick="seekToTime(${t.first_time})">Nhảy tới ▶</button></td>
+    </tr>
+  `).join("");
+}
+
+window.seekToTime = function(sec) {
+  if (state.tracksData && !$("tabReplay").disabled) {
+    setTab("replay");
+    const v = $("replayVideo");
+    v.currentTime = Math.max(0, sec);
+    v.pause();
+    drawReplayOverlay();
+    drawTimeline();
+  } else if (!$("tabRendered").disabled && state.activeJob?.browser_playable) {
+    setTab("rendered");
+    const rv = $("renderedVideo");
+    rv.currentTime = Math.max(0, sec);
+  }
+};
+
+/* ================= INTERACTIVE CANVAS REPLAY ================= */
+function setupReplay(job, tracks) {
+  const v = $("replayVideo");
+  v.src = `/api/jobs/${job.job_id}/input?t=${Date.now()}`;
+  v.playbackRate = parseFloat($("speedSelect").value || "1");
+  // Sync initial checkbox states from sidebar
+  $("rpBoxes").checked = $("chkBoxes").checked;
+  $("rpIds").checked = $("chkIds").checked;
+  $("rpConf").checked = $("chkConf").checked;
+  $("rpTrails").checked = $("chkTrails").checked;
+  $("rpPending").checked = $("chkPending").checked;
+
+  v.onloadedmetadata = () => {
+    $("seekBar").max = String(v.duration || job.video_meta?.duration_s || 1);
+    $("seekBar").value = "0";
+    $("replayTime").textContent = `${fmtSec(0)} / ${fmtSec(v.duration)}`;
+    resizeOverlayCanvas();
+    drawReplayOverlay();
+  };
+  v.onplay = () => {
+    $("btnPlayPause").textContent = "⏸ Tạm dừng";
+    startReplayLoop();
+  };
+  v.onpause = () => {
+    $("btnPlayPause").textContent = "▶ Phát";
+    stopReplayLoop();
+    drawReplayOverlay();
+    drawTimeline();
+  };
+  v.onseeked = () => {
+    drawReplayOverlay();
+    drawTimeline();
+  };
+  v.ontimeupdate = () => {
+    $("seekBar").value = String(v.currentTime);
+    $("replayTime").textContent = `${fmtSec(v.currentTime)} / ${fmtSec(v.duration || 0)}`;
+    if (v.paused) {
+      drawReplayOverlay();
+      drawTimeline();
+    }
+  };
+}
+
+function resizeOverlayCanvas() {
+  const v = $("replayVideo");
+  const c = $("overlayCanvas");
+  const rect = v.getBoundingClientRect();
+  if (rect.width > 0 && rect.height > 0) {
+    c.width = Math.round(rect.width * window.devicePixelRatio);
+    c.height = Math.round(rect.height * window.devicePixelRatio);
+  }
+}
+
+function startReplayLoop() {
+  stopReplayLoop();
+  const loop = () => {
+    const v = $("replayVideo");
+    if (!v.paused && !v.ended) {
+      drawReplayOverlay();
+      drawTimeline();
+      state.rafId = requestAnimationFrame(loop);
+    }
+  };
+  state.rafId = requestAnimationFrame(loop);
+}
+
+function stopReplayLoop() {
+  if (state.rafId !== null) {
+    cancelAnimationFrame(state.rafId);
+    state.rafId = null;
+  }
+}
+
+function findNearestFrameIndex(frames, tSec) {
+  if (!frames || !frames.length) return -1;
+  let lo = 0, hi = frames.length - 1;
+  while (lo < hi) {
+    const mid = (lo + hi) >> 1;
+    if (frames[mid].t < tSec) lo = mid + 1;
+    else hi = mid;
+  }
+  if (lo > 0 && Math.abs(frames[lo - 1].t - tSec) < Math.abs(frames[lo].t - tSec)) {
+    return lo - 1;
+  }
+  return lo;
+}
+
+function trackColorHex(tid) {
+  if (tid == null) return "#ffbe0b";
+  const hue = Math.round((tid * 137.508 * 2) % 360);
+  return `hsl(${hue}, 92%, 58%)`;
+}
+
+function drawReplayOverlay() {
+  const c = $("overlayCanvas");
+  const v = $("replayVideo");
+  const ctx = c.getContext("2d");
+  ctx.clearRect(0, 0, c.width, c.height);
+
+  if (!state.tracksData || !state.tracksData.frames?.length) return;
+  const vm = state.tracksData.video_meta;
+  const vw = vm.width || v.videoWidth || 640;
+  const vh = vm.height || v.videoHeight || 480;
+
+  // Compute letterboxed video rect inside element
+  const cw = c.width;
+  const ch = c.height;
+  if (cw === 0 || ch === 0) return;
+  const scale = Math.min(cw / vw, ch / vh);
+  const drawW = vw * scale;
+  const drawH = vh * scale;
+  const offX = (cw - drawW) * 0.5;
+  const offY = (ch - drawH) * 0.5;
+
+  const frames = state.tracksData.frames;
+  const fIdx = findNearestFrameIndex(frames, v.currentTime || 0);
+  if (fIdx < 0) return;
+  const rec = frames[fIdx];
+
+  const showBoxes = $("rpBoxes").checked;
+  const showIds = $("rpIds").checked;
+  const showConf = $("rpConf").checked;
+  const showTrails = $("rpTrails").checked;
+  const showPending = $("rpPending").checked;
+  const mode = state.tracksData.config?.mode || "track";
+  const trailLen = Math.max(5, parseInt($("trailRange").value, 10) || 40);
+
+  // Build trails up to current frame for active IDs
+  if (showTrails && mode === "track") {
+    const activeIds = new Set(rec.dets.filter((d) => d.id != null).map((d) => d.id));
+    const startIdx = Math.max(0, fIdx - trailLen);
+    const paths = new Map();
+    for (let i = startIdx; i <= fIdx; i++) {
+      for (const d of frames[i].dets) {
+        if (d.id != null && activeIds.has(d.id)) {
+          if (!paths.has(d.id)) paths.set(d.id, []);
+          paths.get(d.id).push([
+            offX + ((d.x1 + d.x2) * 0.5) * scale,
+            offY + ((d.y1 + d.y2) * 0.5) * scale,
+          ]);
+        }
+      }
+    }
+    for (const [tid, pts] of paths.entries()) {
+      if (pts.length < 2) continue;
+      ctx.strokeStyle = trackColorHex(tid);
+      ctx.lineWidth = Math.max(2, 2.2 * window.devicePixelRatio);
+      ctx.beginPath();
+      ctx.moveTo(pts[0][0], pts[0][1]);
+      for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i][0], pts[i][1]);
+      ctx.stroke();
+    }
+  }
+
+  // Draw boxes
+  const fontSize = Math.max(12, Math.round(13 * window.devicePixelRatio));
+  ctx.font = `600 ${fontSize}px 'Segoe UI', sans-serif`;
+
+  for (const d of rec.dets) {
+    if (mode === "track" && !d.confirmed && !showPending) continue;
+    const x1 = offX + d.x1 * scale;
+    const y1 = offY + d.y1 * scale;
+    const x2 = offX + d.x2 * scale;
+    const y2 = offY + d.y2 * scale;
+    const col = trackColorHex(mode === "track" ? d.id : 1);
+
+    if (showBoxes) {
+      ctx.save();
+      ctx.strokeStyle = col;
+      ctx.lineWidth = Math.max(2, 2.2 * window.devicePixelRatio);
+      if (mode === "track" && !d.confirmed) ctx.setLineDash([6 * window.devicePixelRatio, 4 * window.devicePixelRatio]);
+      ctx.strokeRect(x1, y1, x2 - x1, y2 - y1);
+      ctx.restore();
+
+      const parts = [];
+      if (mode === "track" && showIds) parts.push(d.id != null ? `#${d.id}` : "?");
+      parts.push(d.cls);
+      if (showConf) parts.push(d.conf.toFixed(2));
+      const label = parts.join(" ");
+      if (label) {
+        const tw = ctx.measureText(label).width;
+        const padX = 6 * window.devicePixelRatio;
+        const bh = fontSize + 8 * window.devicePixelRatio;
+        const ly = y1 - bh >= offY ? y1 - bh : y2;
+        ctx.fillStyle = col;
+        ctx.fillRect(x1, ly, tw + padX * 2, bh);
+        ctx.fillStyle = "#0b1120";
+        ctx.fillText(label, x1 + padX, ly + fontSize + 2 * window.devicePixelRatio);
+      }
+    }
+  }
+}
+
+/* ================= TIMELINE CHART ================= */
+function drawTimeline() {
+  const c = $("timelineCanvas");
+  const dpr = window.devicePixelRatio || 1;
+  const w = Math.max(300, Math.round(c.clientWidth * dpr));
+  const h = Math.max(100, Math.round(c.clientHeight * dpr));
+  if (c.width !== w || c.height !== h) {
+    c.width = w;
+    c.height = h;
+  }
+  const ctx = c.getContext("2d");
+  ctx.clearRect(0, 0, w, h);
+
+  const frames = state.tracksData?.frames || [];
+  if (!frames.length) {
+    ctx.fillStyle = "#64748b";
+    ctx.font = `${12 * dpr}px sans-serif`;
+    ctx.fillText("Chưa có dữ liệu timeline", 16 * dpr, h / 2);
+    return;
+  }
+
+  // Grid lines
+  ctx.strokeStyle = "rgba(148, 163, 184, 0.14)";
+  ctx.lineWidth = 1;
+  for (const frac of [0.25, 0.5, 0.75]) {
+    const y = Math.round(h * frac);
+    ctx.beginPath();
+    ctx.moveTo(0, y);
+    ctx.lineTo(w, y);
+    ctx.stroke();
+  }
+
+  const n = frames.length;
+  const barW = Math.max(1.5 * dpr, w / n);
+  for (let i = 0; i < n; i++) {
+    const dets = frames[i].dets;
+    if (!dets.length) continue;
+    const maxConf = Math.max(...dets.map((d) => d.conf));
+    const hasConfirmed = dets.some((d) => d.confirmed);
+    const barH = Math.max(4 * dpr, maxConf * (h - 14 * dpr));
+    const x = (i / n) * w;
+    ctx.fillStyle = hasConfirmed ? "rgba(56, 189, 248, 0.85)" : "rgba(245, 158, 11, 0.75)";
+    ctx.fillRect(x, h - barH, barW, barH);
+  }
+
+  // Playhead
+  const dur = state.tracksData.video_meta?.duration_s || frames[n - 1].t || 1;
+  const curT = state.activeTab === "rendered"
+    ? ($("renderedVideo").currentTime || 0)
+    : ($("replayVideo").currentTime || 0);
+  const px = Math.max(0, Math.min(w, (curT / dur) * w));
+  ctx.strokeStyle = "#22c55e";
+  ctx.lineWidth = 2 * dpr;
+  ctx.beginPath();
+  ctx.moveTo(px, 0);
+  ctx.lineTo(px, h);
+  ctx.stroke();
+}
+
+/* ================= HISTORY ================= */
+async function refreshHistory() {
+  try {
+    const info = await fetchJson("/api/info");
+    state.info = info;
+    const list = $("historyList");
+    const jobs = info.jobs || [];
+    if (!jobs.length) {
+      list.innerHTML = `<div style="color:var(--muted);">Chưa có phiên test nào.</div>`;
+      return;
+    }
+    list.innerHTML = jobs.map((j) => {
+      const active = j.job_id === state.activeJobId ? "active" : "";
+      const cfg = j.config || {};
+      const stCls = `st-${j.status}`;
+      const label = cfg.model_short
+        ? `${cfg.model_short} · ${cfg.mode || ""} · ${j.summary?.avg_fps ?? j.avg_fps ?? 0} FPS · ${j.unique_track_ids} IDs`
+        : "Đã tải lên (chưa chạy)";
+      return `
+        <div class="history-item ${active}" onclick="selectJob('${j.job_id}')">
+          <div style="min-width:0;">
+            <div style="font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${j.video_meta?.filename || j.job_id}</div>
+            <div class="h-meta">${label}</div>
+          </div>
+          <div style="display:flex; align-items:center; gap:6px; flex-shrink:0;">
+            <span class="status-tag ${stCls}">${j.status}</span>
+            <button type="button" class="btn-sm" onclick="event.stopPropagation(); deleteJob('${j.job_id}')" title="Xóa">✕</button>
+          </div>
+        </div>
+      `;
+    }).join("");
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+window.selectJob = async function(jobId) {
+  try {
+    const job = await fetchJson(`/api/jobs/${jobId}/status`);
+    applySelectedJob(job);
+    await refreshHistory();
+  } catch (err) {
+    showError(err.message);
+  }
+};
+
+window.deleteJob = async function(jobId) {
+  try {
+    await fetchJson(`/api/jobs/${jobId}`, { method: "DELETE" });
+    if (state.activeJobId === jobId) {
+      state.activeJobId = null;
+      state.activeJob = null;
+      state.tracksData = null;
+      updateStartButtonLabel();
+    }
+    await refreshHistory();
+  } catch (err) {
+    showError(err.message);
+  }
+};
+
+function bindDropzoneInput() {
+  const dz = $("dropzone");
+  const fi = $("fileInput");
+  dz.onclick = () => fi.click();
+  fi.onchange = (e) => {
+    if (e.target.files?.[0]) uploadFile(e.target.files[0]);
+  };
+  dz.ondragover = (e) => { e.preventDefault(); dz.classList.add("dragover"); };
+  dz.ondragleave = () => dz.classList.remove("dragover");
+  dz.ondrop = (e) => {
+    e.preventDefault();
+    dz.classList.remove("dragover");
+    if (e.dataTransfer.files?.[0]) uploadFile(e.dataTransfer.files[0]);
+  };
+}
+
+async function init() {
+  bindDropzoneInput();
+
+  $("modelSelect").onchange = syncModelConstraint;
+  $("imgszSelect").onchange = () => { $("imgszVal").textContent = $("imgszSelect").value; };
+  $("confRange").oninput = () => { $("confVal").textContent = parseFloat($("confRange").value).toFixed(2); };
+  $("iouRange").oninput = () => { $("iouVal").textContent = parseFloat($("iouRange").value).toFixed(2); };
+  $("strideRange").oninput = () => { $("strideVal").textContent = $("strideRange").value; };
+  $("trailRange").oninput = () => {
+    $("trailVal").textContent = $("trailRange").value;
+    if (state.activeTab === "replay") drawReplayOverlay();
+  };
+
+  document.querySelectorAll("#modeSegmented button").forEach((b) => {
+    b.onclick = () => setMode(b.dataset.mode);
+  });
+
+  document.querySelectorAll(".tab-btn").forEach((b) => {
+    b.onclick = () => { if (!b.disabled) setTab(b.dataset.tab); };
+  });
+
+  $("btnStart").onclick = startInference;
+  $("btnStageStart").onclick = startInference;
+  $("btnOverlayStart").onclick = startInference;
+  $("btnStop").onclick = stopInference;
+  $("btnRefreshHistory").onclick = refreshHistory;
+
+  $("btnDlVideo").onclick = () => {
+    if (state.activeJobId) window.location.href = `/api/jobs/${state.activeJobId}/download`;
+  };
+  $("btnDlJson").onclick = () => {
+    if (state.activeJobId) window.location.href = `/api/jobs/${state.activeJobId}/tracks.json?download=1`;
+  };
+  $("btnDlCsv").onclick = () => {
+    if (state.activeJobId) window.location.href = `/api/jobs/${state.activeJobId}/tracks.csv`;
+  };
+
+  // Replay controls
+  $("btnPlayPause").onclick = () => {
+    const v = $("replayVideo");
+    if (v.paused) v.play();
+    else v.pause();
+  };
+  const stepFrame = (dir) => {
+    const v = $("replayVideo");
+    v.pause();
+    const fps = state.tracksData?.video_meta?.fps || 30;
+    v.currentTime = Math.max(0, Math.min(v.duration || 0, v.currentTime + dir / fps));
+  };
+  $("btnStepBack").onclick = () => stepFrame(-1);
+  $("btnStepFwd").onclick = () => stepFrame(1);
+  $("seekBar").oninput = () => {
+    const v = $("replayVideo");
+    v.currentTime = parseFloat($("seekBar").value);
+    drawReplayOverlay();
+    drawTimeline();
+  };
+  $("speedSelect").onchange = () => {
+    $("replayVideo").playbackRate = parseFloat($("speedSelect").value);
+  };
+  ["rpBoxes", "rpIds", "rpConf", "rpTrails", "rpPending"].forEach((id) => {
+    $(id).onchange = () => drawReplayOverlay();
+  });
+
+  // Timeline click-to-seek & hover
+  $("timelineCanvas").onclick = (e) => {
+    if (!state.tracksData?.frames?.length) return;
+    const rect = $("timelineCanvas").getBoundingClientRect();
+    const ratio = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+    const dur = state.tracksData.video_meta?.duration_s || 0;
+    window.seekToTime(ratio * dur);
+  };
+  $("timelineCanvas").onmousemove = (e) => {
+    const frames = state.tracksData?.frames;
+    if (!frames?.length) return;
+    const rect = $("timelineCanvas").getBoundingClientRect();
+    const ratio = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+    const idx = Math.min(frames.length - 1, Math.floor(ratio * frames.length));
+    const rec = frames[idx];
+    $("timelineHover").textContent = `F${rec.f} (${fmtSec(rec.t)}) · ${rec.dets.length} detections`;
+  };
+
+  window.addEventListener("resize", () => {
+    if (state.activeTab === "replay") {
+      resizeOverlayCanvas();
+      drawReplayOverlay();
+    }
+    drawTimeline();
+  });
+
+  window.addEventListener("keydown", (e) => {
+    if (["INPUT", "SELECT", "TEXTAREA"].includes(document.activeElement?.tagName)) return;
+    if (state.activeTab !== "replay") return;
+    if (e.code === "Space") {
+      e.preventDefault();
+      $("btnPlayPause").click();
+    } else if (e.code === "ArrowLeft") {
+      e.preventDefault();
+      stepFrame(-1);
+    } else if (e.code === "ArrowRight") {
+      e.preventDefault();
+      stepFrame(1);
+    }
+  });
+
+  try {
+    const info = await fetchJson("/api/info");
+    state.info = info;
+    renderQuantStrip(info);
+    populateSelectors(info);
+    if (info.jobs && info.jobs.length > 0 && !state.activeJobId) {
+      applySelectedJob(info.jobs[0]);
+    }
+    await refreshHistory();
+    drawTimeline();
+  } catch (err) {
+    showError("Không thể kết nối backend: " + err.message);
+  }
+}
+
+init();
+</script>
+</body>
+</html>

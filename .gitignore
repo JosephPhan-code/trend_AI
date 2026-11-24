@@ -1,0 +1,93 @@
+# =============================================================================
+# .gitignore — Dự án AI Drone Detection & Gimbal Tracking (PC + Raspberry Pi 5)
+# =============================================================================
+
+# 1. Thư mục Dataset, Ảnh, Nhãn & Phiên bản dữ liệu (Không đẩy lên Git)
+clean_dataset/images/
+clean_dataset/labels/
+clean_dataset/labels_backup*/
+data2/images/
+data2/labels/
+data2/labels_backup*/
+data2/runs/
+data2/runs_*/
+data2/*.txt
+data2/kaggle/
+drone_dataset_unified/images/
+drone_dataset_unified/labels/
+drone_dataset_unified/labels_backup*/
+drone_dataset_unified/metadata/*.csv
+drone_dataset_unified/metadata/*.parquet
+drone_dataset_unified/*.txt
+drone_dataset_unified/*.cache
+clean_dataset/*.txt
+sky_hard_negatives_10k/manifest.csv
+yolo26s_p2_img640/
+Archive/models/yolo26s_p2_epoch14_640_hailo8.hef
+yolov8n.pt
+yolo26n.pt
+unified_dataset/
+sky_hard_negatives_10k/images/
+sky_hard_negatives_10k/labels/
+Data_tong_hop/
+data_train/
+dataset_v2/
+trend_AI/
+quarantine_*/
+output_frames/
+autolabel_train/
+clean_relabel_train/
+calib_images/
+Archive/calib_images/
+drone_test_web/uploads/
+drone_test_web/outputs/
+
+# 2. Thư mục Kết quả Training & Logs
+runs/
+drone_test_web/runs/
+*.log
+id_debug_*.log
+tracker_diag_*.csv
+*audit*.csv
+*quarantine*.csv
+*.cache
+
+# 3. File nén, Video & Ảnh mẫu rời
+*.zip
+*.tar
+*.tar.gz
+*.rar
+*.7z
+*.mp4
+*.avi
+*.mov
+*.mkv
+*.webm
+*.jpg
+*.jpeg
+*.png
+
+# 4. Checkpoint trung gian dung lượng lớn (Giữ lại model chính .pt/.onnx/.hef chọn lọc hoặc quản lý qua Releases)
+**/weights/epoch*.pt
+**/weights/last.pt
+*.har
+
+# 5. Môi trường Python, IDE & OS rác
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+env/
+.env
+.vscode/
+.idea/
+__MACOSX/
+._*
+.DS_Store
+Thumbs.db
+
+# 6. Các file nháp tạm thời trong workspace
+/200
+/220
+/read.txt

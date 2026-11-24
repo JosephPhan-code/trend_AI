@@ -1,0 +1,7 @@
+path: E:/trend_AI/data2
+train: finetune_15ep_train.txt
+val: images/val
+test: images/test
+nc: 1
+names:
+  0: drone

@@ -1,0 +1,207 @@
+{
+  "dataset_name": "drone_dataset_unified",
+  "version": "v3.0.0",
+  "status": "ACTIVE_PRODUCTION",
+  "released_at": "2026-11-24T15:16:50",
+  "release_note": "Unified Batch 1 + Batch 2, 333K multi-signal audit, Clean Teacher v3 purification (~98.9% zero-FP precision), zero MD5/dHash64 split leakage.",
+  "dataset_sha256": "34df6f9935237722a40fdea3a2b47740d04b642abdada95690a773c5702c3010",
+  "classes": {
+    "0": "drone"
+  },
+  "catalog_files": {
+    "csv": "metadata/dataset_catalog_v3.0.0.csv",
+    "parquet": "metadata/dataset_catalog_v3.0.0.parquet"
+  },
+  "quality_benchmarks": {
+    "structural_cleanliness_pct": 100.0,
+    "blind_qa_zero_fp_precision_pct": 98.9,
+    "blind_qa_positive_zero_fp": "72/72 (100%)",
+    "blind_qa_hard_negative_clean": "15/16 (1 borderline night dot)",
+    "md5_leakage_across_splits": {
+      "train_val": 0,
+      "train_test": 0,
+      "val_test": 0
+    },
+    "high_entropy_dhash64_leakage_across_splits": {
+      "train_val": 0,
+      "train_test": 0,
+      "val_test": 0
+    }
+  },
+  "integrity": {
+    "total_images": 320980,
+    "unpaired_count": 0,
+    "invalid_labels": 0,
+    "hn_with_box": 0,
+    "pos_empty_label": 0,
+    "verified_100pct_clean": true
+  },
+  "summary": {
+    "total_images": 320980,
+    "total_boxes": 867389,
+    "total_image_size_gb": 36.84,
+    "by_split": {
+      "test": 28886,
+      "train": 263332,
+      "val": 28762
+    },
+    "by_batch_origin": {
+      "batch1_clean": 87280,
+      "batch2_data2": 233700
+    },
+    "by_source_tag": {
+      "d2_rgb_antiuav300": 71559,
+      "c1_datatrain": 67785,
+      "d2_rgb_pathikg": 53722,
+      "d2_rgb_mavvid": 36523,
+      "d2_ir_2025": 25000,
+      "d2_ir_410": 24984,
+      "c1_tonghop": 12730,
+      "c1_orig": 6765,
+      "d2_rgb_dvb10k": 5178,
+      "hn_bird": 4596,
+      "hn_skyair": 2500,
+      "hn_skyant": 2499,
+      "hn_skycloud": 2499,
+      "hn_skybird": 2495,
+      "hn_antiuav": 1147,
+      "d2_rgb_detfly": 998
+    },
+    "by_modality_tag": {
+      "rgb": 270996,
+      "thermal_ir": 49984
+    },
+    "by_label_type_tag": {
+      "hard_negative_0box": 15736,
+      "positive_drone": 305244
+    },
+    "by_domain_tag": {
+      "tracking_hud_rgb": 84289,
+      "mixed_autolabel_purified": 67785,
+      "outdoor_youtube_park": 53722,
+      "outdoor_video_multi": 36523,
+      "thermal_swarm_ir": 25000,
+      "thermal_single_ir": 24984,
+      "mixed_real_closeup": 6765,
+      "synthetic_distractor_rgb": 5178,
+      "hn_birds_heli_planes": 4596,
+      "hn_airplanes": 2500,
+      "hn_poles_antennas_towers": 2499,
+      "hn_clouds_sky": 2499,
+      "hn_birds_sky_ir": 2495,
+      "hn_empty_hud_buildings": 1147,
+      "topdown_nadir_rgb": 998
+    },
+    "by_density_tag": {
+      "single_drone": 259336,
+      "swarm_drone": 24630,
+      "multi_drone": 21278,
+      "empty_hn": 15736
+    },
+    "by_scale_tag": {
+      "tiny_small": 174347,
+      "medium": 101208,
+      "large_closeup": 29689,
+      "none": 15736
+    },
+    "by_provenance_tag": {
+      "original_verified": 297401,
+      "hard_negative_verified": 15736,
+      "purified_teacher_v3": 6331,
+      "fixed_v3_surgical": 1512
+    },
+    "source_by_split": {
+      "c1_datatrain": {
+        "train": 55889,
+        "val": 5917,
+        "test": 5979
+      },
+      "c1_orig": {
+        "train": 5648,
+        "val": 565,
+        "test": 552
+      },
+      "c1_tonghop": {
+        "train": 10716,
+        "val": 1029,
+        "test": 985
+      },
+      "d2_ir_2025": {
+        "train": 22300,
+        "val": 1358,
+        "test": 1342
+      },
+      "d2_ir_410": {
+        "train": 20412,
+        "val": 2259,
+        "test": 2313
+      },
+      "d2_rgb_antiuav300": {
+        "train": 58543,
+        "val": 6458,
+        "test": 6558
+      },
+      "d2_rgb_detfly": {
+        "train": 874,
+        "val": 60,
+        "test": 64
+      },
+      "d2_rgb_dvb10k": {
+        "train": 4108,
+        "val": 533,
+        "test": 537
+      },
+      "d2_rgb_mavvid": {
+        "train": 29059,
+        "val": 3745,
+        "test": 3719
+      },
+      "d2_rgb_pathikg": {
+        "train": 43153,
+        "val": 5292,
+        "test": 5277
+      },
+      "hn_antiuav": {
+        "train": 949,
+        "val": 98,
+        "test": 100
+      },
+      "hn_bird": {
+        "train": 3652,
+        "val": 473,
+        "test": 471
+      },
+      "hn_skyair": {
+        "train": 2001,
+        "val": 250,
+        "test": 249
+      },
+      "hn_skyant": {
+        "train": 1999,
+        "val": 250,
+        "test": 250
+      },
+      "hn_skybird": {
+        "train": 2030,
+        "val": 227,
+        "test": 238
+      },
+      "hn_skycloud": {
+        "train": 1999,
+        "val": 248,
+        "test": 252
+      }
+    }
+  },
+  "lineage": {
+    "previous_versions": [
+      "v1.0.0 (clean_dataset)",
+      "v2.0.0 (data2)"
+    ],
+    "backup_v3_batch1": "e:\\trend_AI\\clean_dataset\\labels_backup_v3",
+    "backup_v3_batch2": "e:\\trend_AI\\data2\\labels_backup_v3",
+    "backup_v4_teacher_v3": "e:\\trend_AI\\drone_dataset_unified\\labels_backup_v4",
+    "quarantine_v3": "e:\\trend_AI\\quarantine_audit_v3",
+    "quarantine_v4": "e:\\trend_AI\\quarantine_audit_v4"
+  }
+}

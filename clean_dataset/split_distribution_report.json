@@ -1,0 +1,62 @@
+{
+  "updated_at": "2026-11-22T20:13:16.957884",
+  "split_method": "Sequence-Block Stratified Split (block_size<=150) — Zero Frame Leakage",
+  "anti_overfitting_features": [
+    "Contiguous video-block isolation across train/val/test",
+    "Hard-Negative injection (birds, airplanes, helicopters, empty HUD crosshairs, buildings)",
+    "Stratified identical distribution across train/val/test"
+  ],
+  "totals": {
+    "grand_total": 105373,
+    "train": 83842,
+    "val": 10800,
+    "test": 10731
+  },
+  "per_source_distribution": {
+    "b1_datatrain_mixed": {
+      "total": 72350,
+      "train": 57650,
+      "val": 7350,
+      "test": 7350,
+      "train_pct": 79.7,
+      "val_pct": 10.2,
+      "test_pct": 10.2
+    },
+    "b1_orig_mixed": {
+      "total": 8492,
+      "train": 6692,
+      "val": 900,
+      "test": 900,
+      "train_pct": 78.8,
+      "val_pct": 10.6,
+      "test_pct": 10.6
+    },
+    "b1_tonghop_rgbt": {
+      "total": 20031,
+      "train": 15900,
+      "val": 2100,
+      "test": 2031,
+      "train_pct": 79.4,
+      "val_pct": 10.5,
+      "test_pct": 10.1
+    },
+    "hard_neg_antiuav": {
+      "total": 2000,
+      "train": 1600,
+      "val": 200,
+      "test": 200,
+      "train_pct": 80.0,
+      "val_pct": 10.0,
+      "test_pct": 10.0
+    },
+    "hard_neg_bird_air": {
+      "total": 2500,
+      "train": 2000,
+      "val": 250,
+      "test": 250,
+      "train_pct": 80.0,
+      "val_pct": 10.0,
+      "test_pct": 10.0
+    }
+  }
+}

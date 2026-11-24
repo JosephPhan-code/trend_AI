@@ -1,0 +1,36 @@
+{
+  "completed_at": "2026-11-21T05:16:54.742063",
+  "target_pass_rate": 99.8,
+  "final_pass_rate": 100.0,
+  "final_train": 85708,
+  "final_val": 15165,
+  "final_total": 100873,
+  "iterations": [
+    {
+      "iteration": 1,
+      "total_images": 104621,
+      "passed_images": 99746,
+      "failed_images": 4875,
+      "pass_rate_percent": 95.3403,
+      "reason_counts": {
+        "empty_0_box": 4242,
+        "hud_distractor_airplane": 251,
+        "off_center_small_or_dark_box": 163,
+        "oversized_box": 117,
+        "extreme_aspect_ratio": 95,
+        "ghost_blank_box": 4,
+        "duplicate_overlap_iou": 3
+      },
+      "rescued_relabeled": 1127,
+      "quarantined_non_drone": 3748
+    },
+    {
+      "iteration": 2,
+      "total_images": 100873,
+      "passed_images": 100873,
+      "failed_images": 0,
+      "pass_rate_percent": 100.0,
+      "reason_counts": {}
+    }
+  ]
+}
