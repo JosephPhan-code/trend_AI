@@ -102,6 +102,7 @@ if os.path.exists(PID_FILE):
 
 WEB_HOST = "0.0.0.0"
 WEB_PORT = 5000
+WEB_ENABLED = os.getenv("DRONE_TRACKER_WEB", "0").strip().lower() in {"1", "true", "yes", "on"}
 LOCAL_DISPLAY_MODE = os.getenv("DRONE_TRACKER_HDMI", "auto").strip().lower()
 LOCAL_DISPLAY_ENABLED = (
     LOCAL_DISPLAY_MODE in {"1", "true", "yes", "on"}
@@ -248,6 +249,7 @@ class SharedState:
         self.pid_dirty = False
         self.backend = "INIT"
         self.roi_mode = "FULL"
+        self.stream_viewers = 0
 
     def update_stats(self, **kw):
         with self._lock:

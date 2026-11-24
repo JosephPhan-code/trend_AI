@@ -45,10 +45,10 @@ else
 fi
 
 export PYTHONUNBUFFERED=1
+export DRONE_TRACKER_WEB="${DRONE_TRACKER_WEB:-0}"
 echo "Drone tracker đang chạy bằng: $PYTHON"
 echo "Thư mục: $SCRIPT_DIR"
-echo "Camera Target FPS: $DRONE_TRACKER_CAMERA_FPS"
-echo "Mở web tại: http://$(hostname -I 2>/dev/null | awk '{print $1}'):5000"
+echo "Camera Target FPS: $DRONE_TRACKER_CAMERA_FPS | Web Dashboard: $DRONE_TRACKER_WEB (set DRONE_TRACKER_WEB=1 để bật)"
 echo "Nhấn Ctrl+C để dừng an toàn."
 
 "$PYTHON" "$SCRIPT_DIR/main.py"

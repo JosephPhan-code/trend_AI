@@ -76,6 +76,7 @@ from config import (
     STOP_EVENT,
     TARGET_GUIDE,
     UI_FPS,
+    WEB_ENABLED,
     WEB_HOST,
     WEB_PORT,
     RateMeter,
@@ -236,8 +237,11 @@ class AegisTrackerApplication:
                 threading.Thread(target=thread_camera, name="T-Camera", daemon=True),
                 threading.Thread(target=thread_ai, name="T-AI", daemon=True),
                 threading.Thread(target=thread_pid_servo, args=(self.servo,), name="T-PID", daemon=True),
-                threading.Thread(target=thread_web, name="T-Web", daemon=True),
             ]
+            if WEB_ENABLED:
+                self.threads.append(
+                    threading.Thread(target=thread_web, name="T-Web", daemon=True)
+                )
             if LOCAL_DISPLAY_ENABLED:
                 self.threads.append(
                     threading.Thread(target=thread_local_display, name="T-HDMI", daemon=True)

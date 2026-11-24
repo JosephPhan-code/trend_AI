@@ -482,11 +482,13 @@ class TrackingWorker:
                     )
                     _emit_diag(now, detections, (ctrl_cx, ctrl_cy), final_pos, dp, dt, mode)
 
-            if (now - last_ui_t) >= ui_period:
+            need_ui = LOCAL_DISPLAY_ENABLED or (STATE.stream_viewers > 0)
+            if need_ui and (now - last_ui_t) >= ui_period:
                 last_ui_t = now
                 annotated = frame.copy()
                 _annotate(annotated, detections, data["ai_fps"], STATE.backend, lockon, final_pos)
-                put_latest(self.stream_queue, {"annotated": annotated})
+                if STATE.stream_viewers > 0:
+                    put_latest(self.stream_queue, {"annotated": annotated})
                 if LOCAL_DISPLAY_ENABLED:
                     cv2.putText(
                         annotated, "[CHUOT PHAI / ESC: THOAT]",

@@ -205,14 +205,18 @@ async function shutdownSystem(){
 
 
 def _gen_stream():
-    while True:
-        try:
-            data = q_stream.get(timeout=1.0)
-        except Empty:
-            continue
-        ret, buf = cv2.imencode(".jpg", data["annotated"], [int(cv2.IMWRITE_JPEG_QUALITY), 78])
-        if ret:
-            yield b"--frame\r\nContent-Type: image/jpeg\r\n\r\n" + buf.tobytes() + b"\r\n"
+    STATE.stream_viewers += 1
+    try:
+        while not STOP_EVENT.is_set():
+            try:
+                data = q_stream.get(timeout=1.0)
+            except Empty:
+                continue
+            ret, buf = cv2.imencode(".jpg", data["annotated"], [int(cv2.IMWRITE_JPEG_QUALITY), 78])
+            if ret:
+                yield b"--frame\r\nContent-Type: image/jpeg\r\n\r\n" + buf.tobytes() + b"\r\n"
+    finally:
+        STATE.stream_viewers = max(0, STATE.stream_viewers - 1)
 
 
 @app.route("/")
