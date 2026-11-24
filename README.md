@@ -22,8 +22,13 @@ trend_AI/
 │   └── run_drone_tracker.sh  # Script khởi chạy hệ thống ở chế độ hiệu năng tối đa (120 FPS + CPU Performance)
 │
 ├── Archive/                  # [COMPILER] Pipeline biên dịch & lượng tử hóa mô hình sang Hailo-8 (.hef)
-│   ├── step1_prepare_calib.py# Trích xuất tập ảnh Calibration đại diện
+│   ├── step1_pt_to_onnx.py   # Xuất PyTorch (.pt) -> ONNX
 │   └── step2_onnx_to_hef.py  # Biên dịch ONNX -> HAR -> INT8 Quantization -> Single-Context HEF
+│
+├── docs/                     # [DOCUMENTATION] Tài liệu giải phẫu hiệu năng & cấu hình Best Practice cho YOLO26s
+│   ├── PI5_HAILO8_OPTIMIZATION_GUIDE.md # Hướng dẫn chi tiết tối ưu Pi 5 + Hailo-8 & 3 Best Practices cho YOLO26s-P2
+│   ├── yolo26s_p2_max512.yaml           # Best Practice 2: YOLO26s 4-head (P2..P5) khóa trần max_channels=512 (~4.8M params, 1 Context)
+│   └── yolo26s_p2_p3_p4.yaml            # Best Practice 3: YOLO26s 3-head (P2/P3/P4, bỏ P5) chuyên UAV tầm xa (~2.95M params, 1 Context)
 │
 ├── drone_test_web/           # [PC TESTER] Web Dashboard kiểm thử & đánh giá mô hình trên PC (Flask + ByteTrack)
 │   └── app.py                # Giao diện test video/camera trên PC (PyTorch .pt / ONNX)
@@ -88,12 +93,21 @@ chmod +x run_drone_tracker.sh
 
 ### B. Biên Dịch ONNX Sang HEF (Trên máy Linux x86_64 có Hailo DFC)
 ```bash
-python Archive/step1_prepare_calib.py
 python Archive/step2_onnx_to_hef.py \
-    --onnx models/yolo26s_p2_epoch14_640.onnx \
+    --onnx yolo26s_p2_epoch14_640.onnx \
     --calib_dir calib_images \
     --output_hef models/best.hef \
     --target hailo8 \
     --single_context \
-    --auto_4bit_ratio 0.25
+    --auto_4bit_ratio 0.50
 ```
+
+---
+
+## 5. Tài Liệu Chuyên Sâu: Tối Ưu Hóa `YOLO26s-P2` Trên Pi 5 + Hailo-8 (Không Hạ Xuống Nano)
+
+Xem chi tiết phân tích giải phẫu từng layer (`9.71M params`), bảng đối chiếu đánh đổi (Trade-off) và 3 Best Practices nâng tốc độ **`YOLO26s-P2`** từ `29.8 FPS` lên `80 – 120+ FPS` tại:
+- **[`docs/PI5_HAILO8_OPTIMIZATION_GUIDE.md`](docs/PI5_HAILO8_OPTIMIZATION_GUIDE.md)**
+- Cấu hình kiến trúc mẫu:
+  - **[`docs/yolo26s_p2_max512.yaml`](docs/yolo26s_p2_max512.yaml)** *(Giữ nguyên 100% `YOLO26s` đủ 4 nhánh `P2/P3/P4/P5`, khóa `max_channels=512` $\rightarrow$ giảm từ `9.71M` xuống `~4.80M` params, đạt 1 Context `80–105 FPS`)*.
+  - **[`docs/yolo26s_p2_p3_p4.yaml`](docs/yolo26s_p2_p3_p4.yaml)** *(Giữ nguyên 100% `YOLO26s` ở `P2/P3/P4`, loại bỏ tầng `P5 20×20` $\rightarrow$ giảm xuống `~2.95M` params, đạt 1 Context `100–120+ FPS`)*.
