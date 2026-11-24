@@ -30,7 +30,7 @@ CAMERA_FAST_AE = os.getenv("DRONE_TRACKER_FAST_AE", "1").strip().lower() not in 
 CAMERA_USE_LORES = os.getenv("DRONE_TRACKER_PISP_LORES", "1").strip().lower() not in {"0", "false", "no"}
 CAMERA_SPOT_PREF_SHUTTER_US = int(os.getenv("DRONE_TRACKER_SPOT_PREF_SHUTTER_US", "6000"))
 
-INFER_SIZE = 640
+INFER_SIZE = int(os.getenv("DRONE_TRACKER_INFER_SIZE", "640"))
 LORES_WIDTH = INFER_SIZE
 LORES_HEIGHT = int(round(CAMERA_HEIGHT * (INFER_SIZE / float(CAMERA_WIDTH))))  # 360 cho 1280x720
 LORES_PAD_Y = (INFER_SIZE - LORES_HEIGHT) // 2  # 140
